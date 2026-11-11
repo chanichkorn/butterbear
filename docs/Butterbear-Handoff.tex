@@ -1,0 +1,756 @@
+% Compile with XeLaTeX, LuaLaTeX, or Tectonic. No external images are required.
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=19mm,headheight=14pt]{geometry}
+\usepackage{fontspec}
+\IfFontExistsTF{Times New Roman}{\setmainfont{Times New Roman}}{\setmainfont{TeX Gyre Termes}}
+\IfFontExistsTF{Menlo}{\setmonofont{Menlo}}{\setmonofont{Latin Modern Mono}}
+\usepackage{xcolor,booktabs,tabularx,array,enumitem,listings,fancyhdr,hyperref}
+\definecolor{navy}{HTML}{17324D}
+\definecolor{muted}{HTML}{536477}
+\definecolor{paper}{HTML}{F3F5F7}
+\hypersetup{colorlinks=true,linkcolor=navy,urlcolor=navy,pdftitle={Butterbear Technical Handoff and Presentation Guide},pdfauthor={Prepared for Nemo and Aon}}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Butterbear technical handoff}
+\fancyhead[R]{\small v1 / bf6eeb2}
+\fancyfoot[L]{\small Nemo and Aon}
+\fancyfoot[R]{\small\thepage}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlength{\emergencystretch}{3em}
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.16}
+\setlist{nosep,leftmargin=5mm,topsep=3pt}
+\lstset{basicstyle=\ttfamily\footnotesize,breaklines=true,columns=fullflexible,keepspaces=true,showstringspaces=false,backgroundcolor=\color{paper},frame=single,rulecolor=\color{paper},xleftmargin=2mm,xrightmargin=2mm,aboveskip=5pt,belowskip=5pt}
+\newcommand{\code}[1]{{\small\nolinkurl{#1}}}
+\newcommand{\page}[2]{\clearpage{\color{navy}\LARGE\bfseries #1\par}\vspace{2mm}{\color{muted}#2\par}\vspace{2mm}}
+\newcommand{\topic}[1]{\vspace{2mm}{\large\bfseries\color{navy}#1\par}}
+\newcommand{\say}[1]{\begin{quote}\itshape #1\end{quote}}
+\begin{document}
+{\color{navy}\Huge\bfseries Butterbear\par}
+{\LARGE Campground Booking REST API\par}
+\vspace{3mm}
+{\large Technical handoff and presentation guide\par}
+Prepared for \textbf{Nemo and Aon}. Reviewed against commit \code{bf6eeb2}, dated 11 November 2026.
+
+\topic{What this document gives you}
+A requirement map, source-file guide, database explanation, endpoint reference, email and weather flows, setup instructions, demonstration sequence, and answers to likely professor questions. Read the overview together, then study your assigned technical packages.
+
+\topic{Project identity}
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+Item & Current implementation\\
+\midrule
+Repository & \url{https://github.com/chanichkorn/butterbear}, public\\
+Local folder & \code{/Users/nemo/Documents/GitHub/butterbear}\\
+Base API & \url{http://localhost:5005/api/v1}\\
+Health check & \url{http://localhost:5005/health}\\
+Backend & Node.js 22 or later, Express, MongoDB and Mongoose\\
+Demo email & Nodemailer with Ethereal test inboxes\\
+External data & Open-Meteo weather forecast API\\
+Client & Postman collection in \code{postman/}\\
+\bottomrule
+\end{tabularx}
+
+\topic{Implemented scope}
+Users can register, log in, log out, browse campgrounds, maintain favorites, and create a booking of one to three nights with a special request. Users can view, edit, and cancel their own bookings. Admins can manage any booking and also manage campground records.
+
+Booking creation queues a confirmation and a reminder. Booking edits queue an update email and a replacement reminder. The reminder fetches the check-in forecast and includes it in the email.
+
+\topic{Current completion boundary}
+The API and integrations have been exercised locally. Ethereal receives test messages and exposes browser previews. Actual inbox delivery requires a real SMTP account and authorized sender. The brief permits MongoDB Atlas or PostgreSQL, so configure Atlas for submission. The development setup uses a separate local MongoDB database on port 27019.
+
+Butterbear has not been publicly deployed. A running Node process is required for reminders. The earlier VacQ AWS deployment belongs to a different project.
+
+\topic{How to describe the work split}
+The implementation was prepared with AI assistance. Nemo/Aon labels below assign \textbf{review, verification, maintenance, and presentation responsibilities}. They define an equal allocation for understanding and presenting the AI-assisted implementation. Each presenter should claim the work they actually review, test, modify, and demonstrate.
+
+\page{1. Equal handoff responsibilities}{Three complete technical packages per person, with equal presentation time}
+
+\begin{tabularx}{\linewidth}{@{}p{13mm}p{17mm}X@{}}
+\toprule
+Package & Lead & Responsibility and proof\\
+\midrule
+N1 & Nemo & Authentication, session storage, logout revocation, input validation, and confidentiality. Explain \code{auth.js} and auth handlers in \code{app.js}. Demonstrate login and rejection after logout.\\
+N2 & Nemo & Campground browsing/admin management, favorites, unique membership, and pagination. Explain User/Campground fields in \code{models.js}. Demonstrate add, repeat add, list, and remove.\\
+N3 & Nemo & Booking creation, calendar-night validation, timezone conversion, and special requests. Explain \code{bookingDates()} and the create handler. Demonstrate three nights accepted and four rejected.\\
+A1 & Aon & Booking reads/edits/cancellation, owner/admin scope, revision checking, and notification visibility. Explain update/cancel handlers. Demonstrate another user's rejection and an admin edit.\\
+A2 & Aon & Confirmation/update emails, embedded jobs, claims, leases, retries, cancellation handling, and SMTP/Ethereal. Explain \code{mail.js} and \code{notifications.js}. Show email previews.\\
+A3 & Aon & Weather API, forecast validation/cache/fallback, reminder rescheduling, startup, and end-to-end verification. Explain \code{weather.js}, \code{server.js}, and test strategy. Show the weather reminder.\\
+\bottomrule
+\end{tabularx}
+
+The allocation is 50/50 by complete responsibility packages and speaking time. Authentication and booking rules require different work from external integrations, so source-line counts are not a reliable measure of equality.
+
+\topic{Suggested 12-minute presentation}
+\begin{tabularx}{\linewidth}{@{}p{25mm}p{18mm}X@{}}
+\toprule
+Time & Speaker & Coverage\\
+\midrule
+0:00--1:00 & Nemo & Scope, architecture, original requirements\\
+1:00--3:00 & Nemo & Authentication and campground/favorite behavior\\
+3:00--6:00 & Nemo & Booking dates, special request, creation demo\\
+6:00--8:00 & Aon & Ownership/admin scope, edit and revision behavior\\
+8:00--10:00 & Aon & Job persistence, email worker, message previews\\
+10:00--12:00 & Aon & Weather reminder, verification, deployment boundary\\
+Q\&A & Both & Package lead answers first. Both know the booking lifecycle\\
+\bottomrule
+\end{tabularx}
+
+\topic{Shared preparation}
+\begin{enumerate}
+\item Each person opens the files in their packages and traces a request from input to database write and response.
+\item Nemo creates the booking that Aon edits. Both keep the same saved BOOKING\_ID.
+\item Aon inspects email previews before cancellation. Cancellation prevents further worker claims.
+\item Swap roles once in rehearsal. Both must explain why login alone does not authorize access to someone else's booking.
+\end{enumerate}
+
+\page{2. Requirement traceability}{Map each requested behavior to its implementation}
+
+\topic{Original Project 2}
+\begin{tabularx}{\linewidth}{@{}p{9mm}X p{41mm}@{}}
+\toprule
+ID & Implemented behavior & Main implementation\\
+\midrule
+B1 & Register with name, phone, email, password & Registration route, User\\
+B2 & Email/password login and session logout & \code{auth.js}, Session\\
+B3 & Browse campground name/address/phone and book 1--3 nights & Campground/create routes\\
+B4 & View own bookings & \code{bookingOwner()}\\
+B5 & Edit own booking & PATCH booking route\\
+B6 & Cancel own booking & DELETE booking route\\
+B7 & Admin views all active bookings & Role-aware read/list scope\\
+B8 & Admin edits any active future booking & Same edit handler, admin scope\\
+B9 & Admin cancels any active booking & Same cancel handler, admin scope\\
+\bottomrule
+\end{tabularx}
+
+\topic{Butterbear additions}
+\begin{tabularx}{\linewidth}{@{}p{9mm}X p{41mm}@{}}
+\toprule
+ID & Implemented behavior & Main implementation\\
+\midrule
+A1 & Add/remove own favorite campground & Favorite PUT/DELETE\\
+A2 & View own favorites & Favorite GET/populate\\
+A3 & Queue confirmation after successful booking & \code{notificationJobs()}\\
+A4 & Fetch external weather and include it in the reminder before check-in & Weather service and worker\\
+A5 & Queue email after successful booking edit & Revision and appended jobs\\
+A6 & Add/edit a special request & \code{specialRequest}, max 2,000 characters\\
+\bottomrule
+\end{tabularx}
+
+A4 reflects the agreed extension. The reminder is retained and enriched with an external weather API. Weather is fetched near check-in, so a booking can be created beyond the forecast horizon.
+
+\topic{Non-functional requirements}
+\begin{itemize}
+\item \textbf{Authentication and confidentiality.} Password hashing, signed JWTs, stored sessions, role checks, and owner filters protect private bookings. Production needs HTTPS for tokens in transit.
+\item \textbf{Three-second response target.} The verified local user workflow's slowest request was weather at 916 ms. The admin workflow's slowest was 276 ms. These are observations, not a production latency guarantee or load-test result.
+\item \textbf{Postman usability.} The collection supplies user, cancellation/logout, and admin workflows. No frontend is required by the brief.
+\item \textbf{Database constraint.} The implementation supports MongoDB Atlas. Configure Atlas for submission because the current local development database differs from the stated Atlas/PostgreSQL constraint.
+\end{itemize}
+
+\page{3. Architecture and source map}{One Express API with a database-backed email worker}
+
+\begin{lstlisting}
+Postman -> Express middleware -> authentication / authorization
+        -> validation -> MongoDB write -> JSON response
+
+Background worker in the same Node process
+  -> claim a due embedded notification
+  -> fetch Open-Meteo for a reminder
+  -> Nodemailer SMTP / Ethereal
+  -> save status and preview URL
+\end{lstlisting}
+
+\begin{tabularx}{\linewidth}{@{}p{49mm}X@{}}
+\toprule
+File & Responsibility\\
+\midrule
+\code{src/server.js} & Validate configuration, connect DB, initialize indexes/mail, start worker/API, handle shutdown.\\
+\code{src/app.js} & Routes, headers, rate limits, request size, owner filters, booking writes, centralized errors.\\
+\code{src/models.js} & User, Session, Campground, Booking, notification schemas and indexes.\\
+\code{src/auth.js} & JWT/session creation and verification, current user/session, admin guard, owner scope.\\
+\code{src/validation.js} & Typed input checks, IDs, coordinates/timezone, dates, pagination, ApiError.\\
+\code{src/config.js} & Required environment settings and production SMTP requirement.\\
+\code{src/services/mail.js} & Transport factory, event snapshots, notification jobs, plain-text messages, previews.\\
+\code{src/services/notifications.js} & Claims, leases, recovery, revision checks, forecast, retries, polling lifecycle.\\
+\code{src/services/weather.js} & Provider URL, timeout, data validation, normalization, bounded cache.\\
+\code{scripts/seed.js} & Sample campgrounds and optional admin from local environment settings.\\
+\code{test/api.test.js} & Ten tests using isolated MongoDB and controlled weather/mail dependencies.\\
+\code{postman/Butterbear.postman_collection.json} & Runnable examples, demo variables, assertions, setup notes.\\
+\code{.env.example} & Safe template without real credentials.\\
+\bottomrule
+\end{tabularx}
+
+\topic{Architecture rationale}
+Express and MongoDB match the earlier backend coursework. Small route handlers remain together in \code{app.js}. Reusable authentication, validation, and external-service logic have separate modules.
+
+Jobs live inside the booking document. Creating a booking and its email work is one atomic MongoDB write, avoiding a booking saved without its job after a separate queue insert fails. No Redis or external job broker is needed.
+
+Email delivery is asynchronous relative to HTTP. A five-second timer in the API process performs the work. This is an application worker, not a separately hosted cron scheduler. The database persists the schedule across process restarts.
+
+\page{4. Database model}{Know the relationships before explaining the routes}
+
+\begin{tabularx}{\linewidth}{@{}p{25mm}X@{}}
+\toprule
+Collection & Fields and meaning\\
+\midrule
+Users & \code{name}, \code{phone}, lowercase unique \code{email}, hashed \code{password}, immutable \code{role}, \code{favorites[]} referencing Campground, timestamps. Password is excluded from ordinary queries and JSON output.\\
+Sessions & UUID \code{_id}, user reference, \code{expiresAt}. A TTL index eventually removes expired sessions, while authentication explicitly checks expiry.\\
+Campgrounds & Name, address, phone, latitude $[-90,90]$, longitude $[-180,180]$, IANA timezone, active flag, timestamps. Default timezone is \code{Asia/Bangkok}.\\
+Bookings & Owner and campground references, date-only checkIn/checkOut, absolute checkInAt, specialRequest, revision, status, embedded notifications, timestamps.\\
+\bottomrule
+\end{tabularx}
+
+\topic{Relationships and ownership}
+One user can own many bookings. One campground can appear in many bookings and favorite lists. Each booking owns its notification history. \code{populate('campground')} returns campground information for booking reads.
+
+The owner is taken from authentication during creation. A request body cannot transfer ownership to another user. Registration always assigns the normal-user role.
+
+\topic{Embedded notification schema}
+\begin{tabularx}{\linewidth}{@{}p{48mm}X@{}}
+\toprule
+Fields & Purpose\\
+\midrule
+\code{_id}, \code{type}, \code{revision} & Unique job, confirmation/update/reminder type, booking revision that created it.\\
+\code{recipient}, \code{snapshot} & Owner email and saved campground name/address/coordinates/timezone, dates, special request.\\
+\code{scheduledAt}, \code{nextAttemptAt} & Earliest delivery time and retry eligibility. Both must be due.\\
+\code{status}, \code{attempts} & Delivery state and number of processing attempts.\\
+\code{claimToken}, \code{leaseUntil} & Unique worker claim and its temporary expiration.\\
+\code{sentAt}, \code{messageId} & Completion time and message identifier. Preview mode also sets sentAt for test transport completion.\\
+\code{previewUrl}, \code{lastError} & Ethereal inspection link or generic delivery failure message.\\
+\bottomrule
+\end{tabularx}
+
+\topic{Indexes and privacy}
+Unique email prevents duplicate accounts, including concurrent registration attempts. Booking indexes cover user/status and status/notification retry time. Session expiry uses a TTL index.
+
+Notifications are excluded by default using \code{select: false}. Creation explicitly strips them from the public booking result. The notification endpoint returns a limited summary after owner/admin checks. Treat preview URLs as private links.
+
+\topic{Logical deletion}
+Cancellation retains the booking with \code{status: 'cancelled'}. Active lists and normal reads hide it. The owned notification endpoint can still inspect its history. Campground deactivation likewise retains its record with \code{active=false}.
+
+The model does not allocate individual pitches or enforce campground capacity. Those concepts were not specified in the supplied requirements.
+
+\page{5. Authentication and security}{Nemo leads. Both presenters must understand owner filters}
+
+\topic{Registration and login}
+Inputs are typed and validated. Email is trimmed and lowercased. Passwords require at least eight characters and at most 72 bytes, respecting bcrypt's input limit. Production password hashing uses bcrypt cost 12.
+
+Login explicitly selects the stored hash and compares it with the submitted password. On success, \code{issueSession()} creates a UUID session ID, signs a JWT using HS256, and stores a Session. The token uses \code{sub} for the user ID and \code{jti} for the session ID. Default lifetime is one day.
+
+\begin{lstlisting}
+Authorization: Bearer <JWT>
+\end{lstlisting}
+
+\topic{Protected-request flow}
+\begin{enumerate}
+\item Require a Bearer header.
+\item Verify JWT signature, allowed algorithm, and expiry.
+\item Find the matching unexpired database Session.
+\item Load the current User and attach it to \code{req.user}.
+\item Check admin role or include the owner constraint in the database query.
+\end{enumerate}
+
+JWT payloads are readable even though they are signed. Passwords and booking details are not stored in the payload. The current role is read from MongoDB rather than trusted from user input.
+
+\topic{Logout is observable}
+Logout deletes the current Session. Reusing its JWT then fails even before its signature expiry. Another login session remains valid. The TTL index is cleanup rather than the only expiration check.
+
+\topic{Confidentiality}
+\code{bookingOwner(req)} returns an owner constraint for a normal user and no additional owner restriction for an admin. Routes combine it with the booking ID. Another user's booking returns 404, reducing disclosure of whether an ID exists.
+
+Public registration cannot create admins. The seed configuration creates an admin locally. Favorite operations always target the authenticated user's document.
+
+\topic{Other controls}
+\begin{itemize}
+\item Helmet headers and disabled Express identifying header.
+\item JSON limit of 20 KB; API limit of 300 requests per ten minutes per IP. Extra login limit of 30 per fifteen minutes.
+\item Typed email/string checks reject object/operator-style login payloads.
+\item Handlers select accepted body fields. They do not pass an arbitrary request object into the database.
+\item IDs must be 24 hexadecimal characters. Pagination and string lengths are bounded.
+\item Hashes/internal errors are excluded from ordinary output. Secrets remain in ignored environment files.
+\end{itemize}
+
+Local HTTP is for development. Deployment needs HTTPS. The rate limiter uses process-local memory and would need shared storage for coordinated limits across several instances.
+
+\say{We verify both the signed token and the stored session, then enforce booking ownership. Authentication identifies the caller. Authorization decides which records that caller can access.}
+
+\page{6. Account and campground endpoints}{All listed paths are relative to /api/v1}
+
+\begin{tabularx}{\linewidth}{@{}p{17mm}p{65mm}X@{}}
+\toprule
+Method & Path & Access and normal result\\
+\midrule
+POST & \code{/auth/register} & Public, 201, user/token\\
+POST & \code{/auth/login} & Public, 200, user/token\\
+GET & \code{/auth/me} & Signed-in user, 200\\
+POST & \code{/auth/logout} & Signed-in user, 200\\
+GET & \code{/campgrounds} & Public, 200, active list\\
+GET & \code{/campgrounds/:id} & Public, 200, active record\\
+GET & \code{/campgrounds/:id/weather} & Public, 200, forecast\\
+POST & \code{/campgrounds} & Admin, 201\\
+PUT & \code{/campgrounds/:id} & Admin, 200, validated full input\\
+DELETE & \code{/campgrounds/:id} & Admin, 200, deactivate\\
+GET & \code{/favorites} & Signed-in user, 200, own list\\
+PUT & \code{/favorites/:campgroundId} & Signed-in user, 200, add\\
+DELETE & \code{/favorites/:campgroundId} & Signed-in user, 200, remove\\
+\bottomrule
+\end{tabularx}
+
+\topic{Registration example}
+\begin{lstlisting}
+{
+  "name": "Demo Camper",
+  "phone": "0800000000",
+  "email": "demo-camper@example.test",
+  "password": "<a new demo password>"
+}
+\end{lstlisting}
+The result contains success, token, and user data without the password hash. Login accepts email/password only. Do not use the placeholder password literally.
+
+\topic{Campground behavior}
+Create and PUT require name, address, phone, numeric coordinates, and an optional valid IANA timezone. PUT validates the complete input, so include all required fields.
+
+The list supports \code{?page=1&limit=25}, maximum limit 100 and maximum page 100,000. Results include count, total, page, and data. Ordering uses name then ID.
+
+Deactivation returns 409 if the check finds active future bookings. It sets active false. This check and a concurrent booking insertion are separate operations, so it is not a cross-document transactional guarantee.
+
+\topic{Favorites}
+Add uses \code{\$addToSet}, preventing duplicate memberships during concurrent requests. Remove uses \code{\$pull} and succeeds when already absent.
+
+Add requires an active campground. Removal only needs a valid ID, allowing removal after deactivation. Favorite listing populates active campgrounds only.
+
+\topic{Forecast}
+\begin{lstlisting}
+GET /api/v1/campgrounds/<id>/weather?date=2026-11-12
+\end{lstlisting}
+Use a current supported date during the demo. Omission defaults to today in that campground's timezone.
+
+\page{7. Booking endpoints and payloads}{Nemo explains creation; Aon explains edits and admin scope}
+
+\begin{tabularx}{\linewidth}{@{}p{17mm}p{65mm}X@{}}
+\toprule
+Method & Path & Normal behavior\\
+\midrule
+POST & \code{/bookings} & 201, create own booking/jobs\\
+GET & \code{/bookings} & 200, own active bookings. Admin sees all\\
+GET & \code{/bookings/:id} & 200, owner/admin\\
+PATCH & \code{/bookings/:id} & 200, edit and queue jobs\\
+DELETE & \code{/bookings/:id} & 200, cancel\\
+GET & \code{/bookings/:id/notifications} & 200, owner/admin summaries\\
+\bottomrule
+\end{tabularx}
+
+\topic{Create example}
+\begin{lstlisting}
+{
+  "campground": "<active campground ID>",
+  "checkIn": "2026-11-12",
+  "checkOut": "2026-11-15",
+  "specialRequest": "A quiet shaded pitch near the restroom."
+}
+\end{lstlisting}
+Replace example dates when they are past. This is a three-night stay. The API supplies the owner from authentication. Special request is optional, trimmed, and limited to 2,000 characters. It is included as plain text in emails.
+
+A successful result includes \code{emailStatus: "queued"}. It proves the jobs were persisted, not that a recipient already received a message.
+
+\topic{Edit example}
+\begin{lstlisting}
+PATCH /api/v1/bookings/<booking ID>
+{
+  "specialRequest": "Please reserve a shaded pitch."
+}
+\end{lstlisting}
+Allowed edits are campground, checkIn, checkOut, and specialRequest. Missing values retain current fields. An empty string clears the request. Explicit null retains it because the handler uses nullish fallback.
+
+The chosen campground must still be active. Dates are revalidated and an already-started booking cannot be edited. Admin edits address the email to the booking owner. Ownership cannot be changed through this payload.
+
+\topic{Cancellation and notifications}
+DELETE marks cancelled and increments revision. Normal reads no longer return it. Repeating DELETE gives 404. No cancellation email is implemented because it was not required.
+
+The notification endpoint can still inspect an owned cancelled booking. Its summaries include job ID/type/revision, state, schedule/completion, attempts, preview link, and generic error. It excludes recipient/snapshot/worker claim fields.
+
+\topic{Status codes}
+\begin{tabularx}{\linewidth}{@{}p{18mm}X@{}}
+\toprule
+Code & Meaning\\
+\midrule
+400 & Invalid input, ID, booking dates, or unsupported forecast date\\
+401 / 403 & Authentication failure / authenticated non-admin on an admin route\\
+404 & Missing, inactive, cancelled, or inaccessible record depending on route\\
+409 / 429 & Conflicting state or duplicate email / rate limit\\
+500 / 503 & Internal or external service failure. Generic service-unavailable message\\
+\bottomrule
+\end{tabularx}
+
+\page{8. Dates and booking revisions}{Calendar rules, scheduling policy, and concurrent updates}
+
+\topic{One to three calendar nights}
+\code{bookingDates()} requires date strings shaped as YYYY-MM-DD. Luxon parses the dates in the campground timezone and rejects invalid dates. Check-out minus check-in must be an integer from one to three calendar days. This is a per-booking stay limit. The API does not cap the user's total number of bookings.
+
+Calendar arithmetic avoids treating a daylight-saving day as exactly 24 hours. The automated test covers a three-night stay across a clock change.
+
+\topic{Times and their meaning}
+\begin{tabularx}{\linewidth}{@{}p{44mm}X@{}}
+\toprule
+Value & Calculation\\
+\midrule
+checkIn/checkOut & Date-only strings describing the stay\\
+checkInAt & Check-in date at 14:00 in the campground timezone, converted to an absolute Date\\
+Normal reminder & Day before check-in at 09:00 in the campground timezone\\
+Late booking/edit & If that reminder time passed, schedule it now while check-in remains in the future\\
+\bottomrule
+\end{tabularx}
+
+For 12 November 2026 check-in in Bangkok, normal reminder time is 11 November at 09:00 and arrival is 12 November at 14:00. Creating the booking on 11 November at noon makes the reminder immediately due. This allows a real reminder demo without changing the machine clock.
+
+The exact times were implementation choices because the requirement only says before check-in. Worker polling and SMTP add delivery delay. Once check-in has passed, an overdue reminder is skipped.
+
+\topic{Optimistic revision check}
+Revision begins at 1. An edit reads revision $r$, then conditionally updates only the document that still has revision $r$. The atomic write sets the fields, writes $r+1$, and appends update/reminder jobs for that new revision.
+
+If two edits read the same revision, the first matching write wins and the second gets 409. If the second request reads after the first completed, it can update the new revision normally. This protects the read-then-write interval. The client does not submit an If-Match version.
+
+Old reminders remain in history. Their job revision differs from the booking's current revision, so they are superseded. The worker checks again after weather lookup in case another edit occurred during the external request.
+
+\topic{Snapshots}
+Each job stores campground name/address/coordinates/timezone, check-in/out, and the special request at event time. Later campground metadata edits do not rewrite old snapshots. Editing the booking creates a new snapshot and reminder.
+
+Confirmation and update jobs describe their original events. Revision supersession specifically governs reminders. A late edit can therefore produce a second reminder for the new revision even if an earlier reminder was already sent.
+
+\say{The booking revision connects reminder delivery to the current booking details. We preserve old jobs as history but prevent an old-revision reminder from being selected as the current reminder.}
+
+\page{9. Email worker and reliability}{Aon traces deliverNext() from claim to completion}
+
+\topic{Atomic persistence}
+Booking creation and its two notification jobs are saved in one document. Editing fields and appending new jobs uses one conditional update. This avoids separate booking/queue writes without requiring a multi-document MongoDB transaction.
+
+\begin{lstlisting}
+pending -> processing -> sent       (real SMTP processing)
+                      -> preview    (Ethereal test transport)
+                      -> pending    (retry later)
+                      -> failed     (fifth failed attempt)
+                      -> superseded (no longer applicable)
+processing with expired lease -> pending
+\end{lstlisting}
+
+\topic{One delivery attempt}
+\begin{enumerate}
+\item Reset processing jobs with expired leases to pending.
+\item Atomically find one active booking with a pending job whose schedule and nextAttemptAt are both due.
+\item Mark it processing, attach a random claim token and a 60-second lease, and increment attempts.
+\item Find that exact job in the returned document using the claim token.
+\item Skip outdated or past-check-in reminders. Fetch weather for a current reminder.
+\item Re-read booking status/revision after the external lookup. Supersede jobs that are no longer applicable.
+\item Compose text and call the SMTP transport.
+\item Update the job using its ID, claim token, and processing state so a stale worker cannot normally overwrite a replacement claim.
+\end{enumerate}
+
+The timer ticks at startup and every five seconds. A running flag prevents overlapping ticks in one process. Each tick handles up to 20 jobs sequentially.
+
+\topic{Failure and backoff}
+SMTP rejection or processing failure retains the booking. Delays after failed attempts 1--4 are 1, 2, 4, and 8 minutes. Attempt five makes the job failed. The generic lastError avoids exposing SMTP details.
+
+The worker does not offer a public failed-job retry route. Investigate configuration first and perform deliberate maintenance if retrying a failed job.
+
+\topic{Guarantees and limits}
+Normal concurrent workers atomically claim different jobs. A lease allows recovery after a crashed worker. The database preserves pending work across restarts, but a running Node process must return to deliver it.
+
+The system uses at-least-once retry behavior. A crash after SMTP acceptance but before saving success can duplicate an email. The stable Message-ID contains booking/job IDs and helps identify that retry, but does not guarantee provider deduplication.
+
+The final cancellation/revision check reduces races. It cannot recall a message already in flight or eliminate the small gap between checking and calling SMTP. SMTP acceptance also does not prove final inbox placement or that a person read the message.
+
+\page{10. External weather integration}{Forecast lookup enriches the pre-check-in reminder}
+
+\topic{Provider request}
+\begin{lstlisting}
+GET https://api.open-meteo.com/v1/forecast
+  ?latitude=<campground latitude>
+  &longitude=<campground longitude>
+  &daily=weather_code,temperature_2m_max,
+         temperature_2m_min,precipitation_probability_max
+  &timezone=<campground timezone>
+  &start_date=<check-in date>
+  &end_date=<check-in date>
+\end{lstlisting}
+The actual URL is encoded with URLSearchParams without line breaks. The public endpoint is used without an API key.
+
+Only coordinates, timezone, and date are needed by Open-Meteo. The request does not include a user's name/email/password, booking ID, or special request.
+
+\topic{Input and output checks}
+The date must be today through today plus 15 days in the campground timezone, a total range of 16 dates. Returned daily time must match the requested date. Weather code, minimum/maximum temperature, and rain probability must all be finite numbers.
+
+The normalized result includes provider attribution, date/timezone, weather code, Celsius temperatures, and precipitation probability. The app reports the numeric weather code without mapping it to a written condition.
+
+\topic{Timeout and cache}
+Fetch uses a two-second abort timeout. Bad HTTP status, network/JSON failure, or incomplete data becomes a 503 error. The HTTP error handler uses a generic service-unavailable message.
+
+Successful values are cached for 15 minutes. The cache key combines coordinates, timezone, and date. At 500 entries, the oldest inserted key is removed before insertion. It is a process-local bounded insertion-order cache, not shared storage or a full LRU implementation.
+
+\topic{Why delivery-time lookup matters}
+A booking can be months away even though the provider cannot forecast that far. The worker waits until the reminder is due, normally one day before arrival. That places the required forecast near the provider's supported range.
+
+A weather outage does not suppress the reminder. It still sends with a forecast-unavailable note and keeps the booking confirmed. The public forecast route instead returns an error.
+
+\topic{Message content example}
+\begin{lstlisting}
+Check-in forecast: 19 to 27 degrees C.
+Rain probability: 40%.
+Weather code: 3.
+Source: Open-Meteo (https://open-meteo.com/).
+\end{lstlisting}
+These numbers illustrate formatting. The actual text uses a Celsius symbol and live/cached values. A controlled test verifies the 19--27 example. A separate live request confirmed provider connectivity.
+
+\say{The external API supplies weather. Email is its delivery channel. We fetch near check-in rather than pretending to have a forecast months in advance.}
+
+\page{11. Email transport and message content}{Explain test delivery separately from real mailbox delivery}
+
+\begin{tabularx}{\linewidth}{@{}p{35mm}X@{}}
+\toprule
+Operation & Generated work\\
+\midrule
+Creation & Confirmation due now and reminder at the calculated time\\
+Booking edit & Update due now and a new-revision reminder\\
+Admin edit & Same behavior, addressed to the booking owner\\
+Cancellation & No cancellation email. No further claims from cancelled bookings\\
+\bottomrule
+\end{tabularx}
+
+Every message includes booking ID, campground name/address, check-in date/time/timezone, check-out date, and special request or None. Reminders add forecast/attribution or an unavailable-weather note. Messages are plain text, so special requests do not become HTML markup.
+
+\topic{Ethereal demo mode}
+With \code{MAIL_TRANSPORT=ethereal}, Nodemailer creates a temporary test account and SMTP transport. Messages can be inspected but are not delivered to a real recipient's mailbox. The worker records status preview and a browser previewUrl.
+
+Retrieve owned notification summaries and open that link. This proves generated content and test SMTP processing. Temporary-account/preview retention is controlled by the provider. Do not treat it as permanent message storage.
+
+\topic{Real delivery configuration}
+\begin{lstlisting}
+MAIL_TRANSPORT=smtp
+MAIL_FROM=Butterbear <an authorized sender>
+SMTP_HOST=<provider SMTP hostname>
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=<provider account>
+SMTP_PASSWORD=<provider credential>
+\end{lstlisting}
+Port 465 normally uses SMTP\_SECURE=true. Port 587 normally negotiates STARTTLS without implicit TLS. Use the selected provider's settings.
+
+Real SMTP calls transport.verify() before API startup. Connection timeout is ten seconds and socket timeout is fifteen seconds. Startup rejects missing required settings or failed verification.
+
+Production configuration requires \code{MAIL_TRANSPORT=smtp}. A deployed instance also needs an authorized sending identity, provider/network access, HTTPS for the API, and a running backend. Keep credentials in environment settings.
+
+\topic{Delivery state meanings}
+\begin{itemize}
+\item \textbf{queued} is the API response after persistence.
+\item \textbf{processing} means a worker has claimed the job.
+\item \textbf{preview} means the test transport completed.
+\item \textbf{sent} means real transport success was recorded.
+\item \textbf{failed} means attempts were exhausted.
+\item \textbf{superseded} means the work no longer applies.
+\end{itemize}
+Neither sent nor preview proves a human read a message. In preview mode, sentAt is a test-processing timestamp.
+
+\page{12. Setup and operations}{Existing local demo and fresh-checkout instructions}
+
+\topic{Existing project on Nemo's Mac}
+Check \url{http://localhost:5005/health}. If it succeeds, the API is already listening. Otherwise start it from the prepared folder.
+\begin{lstlisting}
+cd /Users/nemo/Documents/GitHub/butterbear
+npm start
+\end{lstlisting}
+The prepared ignored .env contains generated admin credentials, a JWT secret, and \code{mongodb://127.0.0.1:27019/butterbear}. Inspect locally for the admin demo and keep secrets out of slides. A second server on the same port gives an address-in-use error.
+
+\topic{Fresh checkout}
+\begin{lstlisting}
+git clone https://github.com/chanichkorn/butterbear.git
+cd butterbear
+npm ci
+cp .env.example .env
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+# Put the generated value into JWT_SECRET.
+# Set MONGO_URI and optional ADMIN_EMAIL / ADMIN_PASSWORD.
+npm run seed
+npm start
+\end{lstlisting}
+Node 22 or later is required. The repository is public, so Aon can clone it without a collaborator invitation.
+
+The example URI assumes MongoDB on port 27017. The prepared local instance uses 27019. A fresh checkout does not automatically install/start persistent MongoDB. Use a normal local installation for development or Atlas. Configure Atlas for the submission database constraint.
+
+\topic{Seeding}
+The seed upserts Khao Yai and Chiang Mai sample records by name without overwriting existing fields. With ADMIN\_EMAIL/PASSWORD, it creates an absent admin. An address already owned by a normal user causes an error. It does not promote a normal account or reset an existing admin password.
+
+\topic{Restart this Mac's local MongoDB if necessary}
+The development setup downloaded a MongoDB binary through the test dependency. From the project folder, this machine-specific command reopens the prepared persistent data directory.
+\begin{lstlisting}
+node_modules/.cache/mongodb-memory-server/mongod-arm64-darwin-7.0.24 \
+  --dbpath .local/mongodb --port 27019 --bind_ip 127.0.0.1 \
+  --logpath .local/mongodb.log --fork
+\end{lstlisting}
+On another machine, use its MongoDB installation or Atlas. Do not start a second process on an occupied database port.
+
+\topic{Lifecycle and configuration}
+Startup validates settings, connects MongoDB, initializes indexes, creates/verifies mail transport, starts the worker, and listens on port 5005. SIGINT/SIGTERM stops HTTP, waits for the active worker tick, closes mail, and disconnects the database.
+
+Set TRUST\_PROXY=1 only behind the single trusted reverse proxy for which it is intended. The earlier AWS deployment has not been reused for Butterbear.
+
+\page{13. Postman demonstration script}{Nemo creates the booking; Aon demonstrates its lifecycle and email}
+
+The collection is \code{postman/Butterbear.postman_collection.json}. It is imported into Nemo's Postman workspace as \textbf{Butterbear Campground Booking}. URL defaults to \code{http://localhost:5005}. It uses collection variables, so no Postman environment is required.
+
+\topic{Nemo's demonstration}
+\begin{enumerate}
+\item Open User workflow. For a fresh run, clear EMAIL and PASSWORD. The folder script generates new demo values only when those variables are empty.
+\item Run Register user, Log in, and My profile. Explain password hashing and the test script that stores TOKEN.
+\item Run List campgrounds, which saves CAMPGROUND\_ID. Open its details and explain the coordinates/timezone.
+\item Add a favorite, inspect My favorites, repeat add to show uniqueness, then remove it.
+\item Create the booking with a special request. The collection generates tomorrow as CHECK\_IN and four days from today as CHECK\_OUT, a three-night stay in Bangkok.
+\item Show 201, saved BOOKING\_ID, and emailStatus queued. Hand this booking to Aon.
+\end{enumerate}
+
+\topic{Aon's demonstration}
+\begin{enumerate}
+\item Read the same booking and edit the special request. Show the increased revision and queued update.
+\item Refresh notification summaries after at least five seconds; SMTP may add more delay.
+\item Open confirmation/update preview URLs and inspect the special request.
+\item Open the current-revision reminder and identify temperature/rain values plus Open-Meteo attribution.
+\item Explain why tomorrow's booking after 09:00 today gets an immediate reminder. Before 09:00, it is scheduled later today. A valid same-day booking before 14:00 is another demonstration option.
+\item Set ADMIN\_EMAIL/PASSWORD from local seed configuration. Admin login changes TOKEN. Show admin reads/edits/cancellation with the test booking ID.
+\item Cancel only after inspecting emails. Finish with logout and rejection of the old session token.
+\end{enumerate}
+
+\topic{Runner selection}
+Run \textbf{User workflow} alone to reproduce 14 requests and 16 assertions. Admin examples need credential variables and an existing test booking. Running all folders blindly can cancel before email inspection and fail admin login with empty credentials.
+
+The collection intentionally has no wait for SMTP completion. A passed Runner proves the synchronous API flow. Refresh notification summaries separately to prove asynchronous email behavior.
+
+\topic{Repeated-run pitfalls}
+\begin{itemize}
+\item Retained EMAIL causes a second Register to return 409. Clear demo credentials for a new account or skip Register and log in.
+\item Missing/stale booking IDs require a fresh booking.
+\item Another user's token correctly returns 404 for this booking.
+\item Admin login replaces TOKEN. Log in as the demo user again before describing an ordinary-user operation.
+\item Postman may store recognized credentials in Vault. Keep the demo on the local app and ensure referenced values are available. This project does not configure a cloud Monitor.
+\end{itemize}
+
+\page{14. Verification and failure demonstrations}{Know what the tests prove and what remains environment-dependent}
+
+\topic{Ten automated tests}
+\begin{tabularx}{\linewidth}{@{}p{9mm}X@{}}
+\toprule
+No. & Coverage in \code{test/api.test.js}\\
+\midrule
+1 & Reject operator-style login input, duplicate normalized email, anonymous creation, and non-admin campground creation.\\
+2 & Concurrent favorite additions remain unique. Lists are user-specific. Repeated removal succeeds.\\
+3 & Calendar-night rules cover daylight saving, invalid dates, zero nights, and four nights.\\
+4 & Creation queues two jobs and stores the request. Another user cannot read/edit/cancel/inspect the booking.\\
+5 & Admin edit creates a revision and addresses the update to the owner.\\
+6 & Concurrent worker calls normally claim each due confirmation/update once.\\
+7 & Current reminder includes controlled weather. Obsolete reminder is skipped.\\
+8 & SMTP failure persists a retry and preserves the booking. Cancellation prevents a later claim.\\
+9 & Weather URL/response checks, unsupported dates, and network failure work with a controlled fetch dependency.\\
+10 & Logout invalidates one session while a second login remains usable.\\
+\bottomrule
+\end{tabularx}
+
+Run \code{npm test}. Tests start an isolated temporary MongoDB and shut it down. They do not touch demo data or rely on real inbox delivery. Mail stream/stub transports and controlled weather responses make failure cases reproducible.
+
+\topic{Live implementation-time checks}
+\begin{itemize}
+\item User workflow passed 14 requests and 16 assertions.
+\item Admin workflow passed seven requests and seven assertions.
+\item Total live checks were 23 assertions across 21 requests.
+\item Open-Meteo returned a real forecast.
+\item A separate Ethereal SMTP test was accepted.
+\item The running API produced confirmation, update, and current-reminder previews. The old reminder was superseded.
+\end{itemize}
+These are recorded implementation-time results. IDs, weather, timestamps, and preview links change. Opening this document does not rerun the tests.
+
+\topic{Useful negative demonstrations}
+\begin{enumerate}
+\item Four-night booking returns 400.
+\item Normal-user token on an admin-only campground route returns 403.
+\item A second user's attempt to read the first user's booking returns 404.
+\item After logout, the same JWT on /auth/me returns 401.
+\item Weather 30 days ahead returns 400, while a distant booking can still be created because reminder weather is fetched later.
+\end{enumerate}
+
+Expected 4xx responses demonstrate rules. A stopped database/API, unavailable SMTP provider, or expired demo session is an operational issue and should be diagnosed separately.
+
+\page{15. Professor questions and answers}{Use these as rehearsal prompts rather than a memorized script}
+
+\topic{Why JWT plus database sessions?}
+JWT provides verifiable identity/expiry. A stored session enables immediate logout for one token without invalidating every other session. Every protected request checks both.
+
+\topic{Why embed email jobs?}
+The booking and its required email work commit together. A separate queue insert could fail after booking success. Embedding fits the small project without an additional broker. Notification history growth is the trade-off.
+
+\topic{Why respond before sending email?}
+SMTP latency and failure are outside the API's control. The route first persists the work and returns queued. The worker delivers/retries independently.
+
+\topic{Can two campers book the same campground dates?}
+Yes. The requirements specify a maximum stay, but do not define pitch inventory or campground capacity. This implementation has no inventory locking, payment, or availability allocation.
+
+\topic{What happens when a booking is edited?}
+The update validates new input, conditionally increments revision, and appends update/reminder jobs. Old reminder revisions become obsolete and are rechecked before delivery.
+
+\topic{What happens after a restart?}
+MongoDB retains pending jobs. A new worker reads due work and reclaims expired leases. A crash after SMTP acceptance can cause a duplicate, so exactly-once email delivery is not promised.
+
+\topic{What if weather is unavailable?}
+The public weather route returns a service error. The reminder still sends with a forecast-unavailable note. The booking remains confirmed.
+
+\topic{Did a real customer receive email?}
+The demo verifies Ethereal SMTP processing and browser previews. Real mailbox delivery requires production SMTP credentials and an authorized sender. Do not describe previews as proof of customer inbox delivery.
+
+\topic{Is the three-second target guaranteed?}
+Measured local requests were below three seconds and weather uses a two-second timeout. There is no production load test or hard end-to-end deadline. Database/network/load conditions still matter.
+
+\topic{How can a user become an admin?}
+Only the seeded local configuration establishes an admin in this implementation. Public registration forces user role, and routes check the stored role.
+
+\topic{What did each presenter contribute?}
+Explain the three assigned review/demo packages, the tests each person verified, and any modifications each actually made. Describe AI assistance according to course rules. The proposed split is a learning and maintenance allocation, not a fabricated contribution record.
+
+\page{16. Boundaries and final checklist}{Keep presentation claims aligned with v1}
+
+\topic{Known implementation boundaries}
+\begin{itemize}
+\item Atlas configuration remains necessary for literal compliance with the brief's Atlas/PostgreSQL database constraint. The current demo database is local MongoDB.
+\item Real email requires SMTP settings. Ethereal provides test previews.
+\item There is no public Butterbear deployment. A running backend is needed for reminders.
+\item Retries can duplicate an accepted message after a crash. In-flight emails cannot be recalled by concurrent edits/cancellation.
+\item Cancellation prevents new job claims. Historical pending jobs can remain in the document. Some non-reminder jobs can still appear pending in its summary.
+\item There is no public failed-job retry endpoint, bounce tracking, delivery webhook, capacity/pitch management, payment, or frontend.
+\item Campground deactivation and booking insertion have a race window because they are separate writes.
+\item Rate limits/cache are process-local. Embedded notification histories and favorite lists are not bounded or paginated like the main list endpoints.
+\item The health route checks that HTTP responds. It is not an ongoing database/SMTP readiness check.
+\end{itemize}
+
+\topic{Before presentation}
+\begin{enumerate}
+\item Both can access the public repository and open their assigned source files.
+\item Database/API are reachable and /health succeeds.
+\item Postman URL is port 5005. Sample campground records exist.
+\item Demo credentials/IDs are current. Secrets are kept out of slides.
+\item Nemo explains bcrypt, session logout, favorite uniqueness, and calendar-night validation.
+\item Aon explains revisions, worker claims/leases, retries, forecast lookup, and Ethereal.
+\item Reminder timing is checked. Email previews are inspected before cancellation.
+\item Both can demonstrate an authorization failure and explain the complete booking lifecycle.
+\item The team describes its actual review, verification, and presentation work accurately.
+\end{enumerate}
+
+\topic{Rebuilding this handoff}
+Compile this standalone source with XeLaTeX, LuaLaTeX, or \code{tectonic Butterbear-Handoff.tex}. No external images are needed. The source uses Times New Roman/Menlo when installed and falls back to TeX Gyre Termes/Latin Modern Mono.
+
+\topic{Source references}
+The code at \url{https://github.com/chanichkorn/butterbear/tree/bf6eeb2} is the implementation authority. Start at app.js, then inspect auth.js, models.js, validation.js and services. Recheck this handoff after those files change.
+
+The original brief is \emph{SW Dev Practice Project Listings}, Project 2 on page 6, with non-functional requirements/constraints on pages 2--3. Butterbear additions and the weather-in-email extension were provided in the project conversation.
+
+\begin{itemize}
+\item Forecast API. \url{https://open-meteo.com/en/docs}
+\item SMTP transport. \url{https://nodemailer.com/smtp}
+\item Ethereal testing. \url{https://nodemailer.com/guides/testing-with-ethereal}
+\end{itemize}
+
+\end{document}
