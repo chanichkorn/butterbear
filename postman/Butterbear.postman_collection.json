@@ -1,0 +1,678 @@
+{
+  "info": {
+    "name": "Butterbear Campground Booking",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Run npm install, copy .env.example to .env and set MONGO_URI and a random JWT_SECRET, then npm run seed and npm start.\n\nSet ADMIN_EMAIL and ADMIN_PASSWORD locally before seeding to create an admin. These credentials are never included in this collection.\n\nRun User workflow first. The pre-request script generates an isolated test email, tomorrow check-in and a 3-night stay.\n\nEthereal is a test inbox and does not deliver to a real mailbox. GET booking notifications returns preview URLs once the worker processes jobs.\n\nReminders run at 09:00 on the day before check-in in the campground timezone. A late booking queues the reminder immediately while check-in is still in the future. Check-in is at 14:00.\n\nWeather uses Open-Meteo. The API supports dates within its 16-day forecast range. The reminder still sends with an unavailable-weather note if the provider is down.\n\nRun the Admin examples individually after setting ADMIN_EMAIL and ADMIN_PASSWORD in Postman. They operate on the test booking ID and demo campground ID.\n\nEmail jobs are stored with the booking, retried up to five attempts and delivered at least once. A crash after SMTP acceptance can cause a duplicate.\n\nFor actual email delivery set MAIL_TRANSPORT=smtp, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD and an authorized MAIL_FROM. Production requires SMTP."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{TOKEN}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "URL",
+      "value": "http://localhost:5005",
+      "type": "string"
+    },
+    {
+      "key": "EMAIL",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "PASSWORD",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "TOKEN",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "CAMPGROUND_ID",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "BOOKING_ID",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "CHECK_IN",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "CHECK_OUT",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "ADMIN_EMAIL",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "ADMIN_PASSWORD",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "User workflow",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (!pm.collectionVariables.get(\"EMAIL\")) pm.collectionVariables.set(\"EMAIL\", \"butterbear-\" + Date.now() + \"@example.test\");",
+              "if (!pm.collectionVariables.get(\"PASSWORD\")) pm.collectionVariables.set(\"PASSWORD\", pm.variables.replaceIn(\"{{$guid}}\"));",
+              "const dateIn = new Date(Date.now() + 86400000).toLocaleDateString(\"en-CA\", { timeZone: \"Asia/Bangkok\" });",
+              "const dateOut = new Date(Date.now() + 4 * 86400000).toLocaleDateString(\"en-CA\", { timeZone: \"Asia/Bangkok\" });",
+              "pm.collectionVariables.set(\"CHECK_IN\", dateIn); pm.collectionVariables.set(\"CHECK_OUT\", dateOut);"
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "name": "Register user",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{URL}}/api/v1/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Butterbear Test User\",\n  \"phone\": \"0800000000\",\n  \"email\": \"{{EMAIL}}\",\n  \"password\": \"{{PASSWORD}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "if (pm.response.code < 300) pm.collectionVariables.set(\"TOKEN\", pm.response.json().token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Log in",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{URL}}/api/v1/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{EMAIL}}\",\n  \"password\": \"{{PASSWORD}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "if (pm.response.code < 300) pm.collectionVariables.set(\"TOKEN\", pm.response.json().token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "My profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{URL}}/api/v1/auth/me"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List campgrounds",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{URL}}/api/v1/campgrounds"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const campgrounds = pm.response.json().data;",
+                  "pm.test(\"Seeded campgrounds exist\", () => pm.expect(campgrounds.length).to.be.above(0));",
+                  "if (campgrounds.length) pm.collectionVariables.set(\"CAMPGROUND_ID\", campgrounds[0]._id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get campground",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{URL}}/api/v1/campgrounds/{{CAMPGROUND_ID}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Check-in weather",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{URL}}/api/v1/campgrounds/{{CAMPGROUND_ID}}/weather?date={{CHECK_IN}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Add favorite",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": "{{URL}}/api/v1/favorites/{{CAMPGROUND_ID}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "My favorites",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{URL}}/api/v1/favorites"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Remove favorite",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{URL}}/api/v1/favorites/{{CAMPGROUND_ID}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create booking with special request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{URL}}/api/v1/bookings",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"campground\": \"{{CAMPGROUND_ID}}\",\n  \"checkIn\": \"{{CHECK_IN}}\",\n  \"checkOut\": \"{{CHECK_OUT}}\",\n  \"specialRequest\": \"A quiet pitch near the restroom, please.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"BOOKING_ID\", pm.response.json().data._id);",
+                  "pm.test(\"Confirmation and reminder queued\", () => pm.expect(pm.response.json().emailStatus).to.eql(\"queued\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "My bookings (admin sees all)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{URL}}/api/v1/bookings"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get booking",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{URL}}/api/v1/bookings/{{BOOKING_ID}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Edit special request",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{URL}}/api/v1/bookings/{{BOOKING_ID}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"specialRequest\": \"Please reserve a shaded pitch.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Email statuses and Ethereal previews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{URL}}/api/v1/bookings/{{BOOKING_ID}}/notifications"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Cancel and log out (run after inspecting emails)",
+      "item": [
+        {
+          "name": "Cancel my booking",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{URL}}/api/v1/bookings/{{BOOKING_ID}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Log out current session",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{URL}}/api/v1/auth/logout"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Logged-out token is rejected",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{URL}}/api/v1/auth/me"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Admin examples (set admin credentials first)",
+      "item": [
+        {
+          "name": "Admin login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{URL}}/api/v1/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{ADMIN_EMAIL}}\",\n  \"password\": \"{{ADMIN_PASSWORD}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "if (pm.response.code < 300) pm.collectionVariables.set(\"TOKEN\", pm.response.json().token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create campground",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{URL}}/api/v1/campgrounds",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Demo Campground\",\n  \"address\": \"Pak Chong, Nakhon Ratchasima\",\n  \"phone\": \"0800000001\",\n  \"latitude\": 14.439,\n  \"longitude\": 101.372,\n  \"timezone\": \"Asia/Bangkok\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"ADMIN_CAMPGROUND_ID\", pm.response.json().data._id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "View all bookings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{URL}}/api/v1/bookings"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Edit a booking",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{URL}}/api/v1/bookings/{{BOOKING_ID}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"specialRequest\": \"Admin confirmed a shaded pitch.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cancel a booking",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{URL}}/api/v1/bookings/{{BOOKING_ID}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update campground",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{URL}}/api/v1/campgrounds/{{ADMIN_CAMPGROUND_ID}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Demo Campground Updated\",\n  \"address\": \"Pak Chong, Nakhon Ratchasima\",\n  \"phone\": \"0800000001\",\n  \"latitude\": 14.439,\n  \"longitude\": 101.372,\n  \"timezone\": \"Asia/Bangkok\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Deactivate campground",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{URL}}/api/v1/campgrounds/{{ADMIN_CAMPGROUND_ID}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
