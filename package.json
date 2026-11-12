@@ -11,7 +11,9 @@
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "seed": "node scripts/seed.js",
-    "test": "node --test --test-concurrency=1"
+    "test": "node --test --test-concurrency=1",
+    "demo": "node scripts/demo.mjs",
+    "demo:env": "node scripts/demo-env.mjs"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
@@ -26,6 +28,7 @@
   },
   "devDependencies": {
     "mongodb-memory-server": "^10.3.0",
+    "newman": "^6.2.3",
     "supertest": "^7.1.4"
   }
 }

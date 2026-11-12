@@ -1,0 +1,844 @@
+{
+  "info": {
+    "name": "Butterbear Final Presentation",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Run 1 Core steps 01-12 through Runner or Newman, then show Class and Sequence Diagram slides, then run 2 Extra credits. Do not run the old collection for this presentation. Admin credentials and DEMO_EMAIL belong in an ignored local environment. This collection contains no real account credentials. A second user booking survives the first user deletion so admin steps operate on valid data. For real delivery choose a Gmail demonstration recipient that you control; the setup creates a unique plus-address alias. Extra credits leave their booking active while email delivery is inspected. Do not cancel it before emails arrive."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{TOKEN}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "URL",
+      "value": "http://localhost:5005",
+      "type": "string"
+    },
+    {
+      "key": "DEMO_EMAIL",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "EMAIL",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "PASSWORD",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "TOKEN",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "ADMIN_EMAIL",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "ADMIN_PASSWORD",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "CAMPGROUND_ID",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "BOOKING_ID",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "ADMIN_BOOKING_ID",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "EXTRA_BOOKING_ID",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "CHECK_IN",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "CHECK_OUT",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "INVALID_CHECK_OUT",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "EXTRA_CHECK_IN",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "EXTRA_CHECK_OUT",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "MAIL_POLL",
+      "value": 0,
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1 Core steps 01-12",
+      "item": [
+        {
+          "name": "01a Registration validation rejects missing phone",
+          "request": {
+            "method": "POST",
+            "url": "{{URL}}/api/v1/auth/register",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Invalid registration\",\n  \"email\": \"{{EMAIL}}\",\n  \"password\": \"{{PASSWORD}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const stamp = Date.now();",
+                  "const mailbox = pm.environment.get(\"DEMO_EMAIL\") || pm.collectionVariables.get(\"DEMO_EMAIL\");",
+                  "const demoAddress = mailbox ? mailbox.replace(/^([^+@]+)(?:\\+[^@]*)?@gmail\\.com$/i, \"$1+butterbear-\" + stamp + \"@gmail.com\") : \"butterbear-\" + stamp + \"@example.test\";",
+                  "pm.collectionVariables.set(\"EMAIL\", demoAddress);",
+                  "pm.collectionVariables.set(\"PASSWORD\", pm.variables.replaceIn(\"{{$guid}}\"));",
+                  "pm.collectionVariables.set(\"TOKEN\", \"\");",
+                  "for (const key of [\"BOOKING_ID\", \"ADMIN_BOOKING_ID\", \"EXTRA_BOOKING_ID\"]) pm.collectionVariables.set(key, \"\");",
+                  "const iso = offset => new Date(Date.now() + 7 * 3600000 + offset * 86400000).toISOString().slice(0, 10);",
+                  "pm.collectionVariables.set(\"CHECK_IN\", iso(1));",
+                  "pm.collectionVariables.set(\"CHECK_OUT\", iso(4));",
+                  "pm.collectionVariables.set(\"INVALID_CHECK_OUT\", iso(5));",
+                  "const localHour = new Date(Date.now() + 7 * 3600000).getUTCHours();",
+                  "const extraOffset = localHour < 9 ? 0 : 1;",
+                  "pm.collectionVariables.set(\"EXTRA_CHECK_IN\", iso(extraOffset));",
+                  "pm.collectionVariables.set(\"EXTRA_CHECK_OUT\", iso(extraOffset + 1));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "01b Register ordinary user",
+          "request": {
+            "method": "POST",
+            "url": "{{URL}}/api/v1/auth/register",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Butterbear Presenter\",\n  \"phone\": \"0800000000\",\n  \"email\": \"{{EMAIL}}\",\n  \"password\": \"{{PASSWORD}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 201\", () => pm.response.to.have.status(201));",
+                  "if (pm.response.code < 300) pm.collectionVariables.set(\"TOKEN\", pm.response.json().token);",
+                  "pm.test(\"Registration creates a normal user\", () => pm.expect(pm.response.json().data.role).to.eql(\"user\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02 User log-in",
+          "request": {
+            "method": "POST",
+            "url": "{{URL}}/api/v1/auth/login",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{EMAIL}}\",\n  \"password\": \"{{PASSWORD}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "if (pm.response.code < 300) pm.collectionVariables.set(\"TOKEN\", pm.response.json().token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03 View campgrounds",
+          "request": {
+            "method": "GET",
+            "url": "{{URL}}/api/v1/campgrounds",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const camps = pm.response.json().data;",
+                  "pm.test(\"Campground list has data\", () => pm.expect(camps.length).to.be.above(0));",
+                  "if (camps.length) pm.collectionVariables.set(\"CAMPGROUND_ID\", camps[0]._id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "04a Create valid three-night booking",
+          "request": {
+            "method": "POST",
+            "url": "{{URL}}/api/v1/bookings",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"campground\": \"{{CAMPGROUND_ID}}\",\n  \"checkIn\": \"{{CHECK_IN}}\",\n  \"checkOut\": \"{{CHECK_OUT}}\",\n  \"specialRequest\": \"A quiet shaded pitch near the restroom.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 201\", () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"BOOKING_ID\", pm.response.json().data._id);",
+                  "pm.test(\"Email work is queued\", () => pm.expect(pm.response.json().emailStatus).to.eql(\"queued\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "04b Create second user booking for later admin steps",
+          "request": {
+            "method": "POST",
+            "url": "{{URL}}/api/v1/bookings",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"campground\": \"{{CAMPGROUND_ID}}\",\n  \"checkIn\": \"{{CHECK_IN}}\",\n  \"checkOut\": \"{{CHECK_OUT}}\",\n  \"specialRequest\": \"Booking retained for the admin demonstration.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 201\", () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"ADMIN_BOOKING_ID\", pm.response.json().data._id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "04c Reject a four-night booking",
+          "request": {
+            "method": "POST",
+            "url": "{{URL}}/api/v1/bookings",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"campground\": \"{{CAMPGROUND_ID}}\",\n  \"checkIn\": \"{{CHECK_IN}}\",\n  \"checkOut\": \"{{INVALID_CHECK_OUT}}\",\n  \"specialRequest\": \"A quiet shaded pitch near the restroom.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Stay length condition is checked\", () => pm.expect(pm.response.json().message).to.include(\"1 and 3\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "05 View own bookings",
+          "request": {
+            "method": "GET",
+            "url": "{{URL}}/api/v1/bookings",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Own booking is listed\", () => pm.expect(pm.response.json().data.map(b => b._id)).to.include(pm.collectionVariables.get(\"BOOKING_ID\")));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "06 Edit own booking",
+          "request": {
+            "method": "PATCH",
+            "url": "{{URL}}/api/v1/bookings/{{BOOKING_ID}}",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"specialRequest\": \"User updated request for a shaded pitch.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Special request changed\", () => pm.expect(pm.response.json().data.specialRequest).to.eql(\"User updated request for a shaded pitch.\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "07a Delete own booking",
+          "request": {
+            "method": "DELETE",
+            "url": "{{URL}}/api/v1/bookings/{{BOOKING_ID}}",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "07b Deleted booking is no longer visible",
+          "request": {
+            "method": "GET",
+            "url": "{{URL}}/api/v1/bookings/{{BOOKING_ID}}",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "08a User log-out",
+          "request": {
+            "method": "POST",
+            "url": "{{URL}}/api/v1/auth/logout",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "08b Logged-out token is rejected",
+          "request": {
+            "method": "GET",
+            "url": "{{URL}}/api/v1/auth/me",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "09 Admin log-in",
+          "request": {
+            "method": "POST",
+            "url": "{{URL}}/api/v1/auth/login",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{ADMIN_EMAIL}}\",\n  \"password\": \"{{ADMIN_PASSWORD}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "if (pm.response.code < 300) pm.collectionVariables.set(\"TOKEN\", pm.response.json().token);",
+                  "pm.test(\"Admin role is active\", () => pm.expect(pm.response.json().data.role).to.eql(\"admin\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "10 View any user booking as admin",
+          "request": {
+            "method": "GET",
+            "url": "{{URL}}/api/v1/bookings/{{ADMIN_BOOKING_ID}}",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "11 Edit user booking as admin",
+          "request": {
+            "method": "PATCH",
+            "url": "{{URL}}/api/v1/bookings/{{ADMIN_BOOKING_ID}}",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"specialRequest\": \"Admin confirmed the quiet pitch.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Admin update succeeded\", () => pm.expect(pm.response.json().data.specialRequest).to.eql(\"Admin confirmed the quiet pitch.\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "12a Delete user booking as admin",
+          "request": {
+            "method": "DELETE",
+            "url": "{{URL}}/api/v1/bookings/{{ADMIN_BOOKING_ID}}",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "12b Admin-deleted booking is unavailable",
+          "request": {
+            "method": "GET",
+            "url": "{{URL}}/api/v1/bookings/{{ADMIN_BOOKING_ID}}",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2 Extra credits step 15",
+      "item": [
+        {
+          "name": "15a Log in as ordinary user",
+          "request": {
+            "method": "POST",
+            "url": "{{URL}}/api/v1/auth/login",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{EMAIL}}\",\n  \"password\": \"{{PASSWORD}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "if (pm.response.code < 300) pm.collectionVariables.set(\"TOKEN\", pm.response.json().token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "15b Add favorite campground",
+          "request": {
+            "method": "PUT",
+            "url": "{{URL}}/api/v1/favorites/{{CAMPGROUND_ID}}",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "15c View favorite campground list",
+          "request": {
+            "method": "GET",
+            "url": "{{URL}}/api/v1/favorites",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Chosen campground is a favorite\", () => pm.expect(pm.response.json().data.map(c => c._id)).to.include(pm.collectionVariables.get(\"CAMPGROUND_ID\")));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "15d Remove favorite campground",
+          "request": {
+            "method": "DELETE",
+            "url": "{{URL}}/api/v1/favorites/{{CAMPGROUND_ID}}",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "15e Fetch external check-in weather",
+          "request": {
+            "method": "GET",
+            "url": "{{URL}}/api/v1/campgrounds/{{CAMPGROUND_ID}}/weather?date={{EXTRA_CHECK_IN}}",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"External provider is Open-Meteo\", () => pm.expect(pm.response.json().data.source).to.eql(\"Open-Meteo\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "15f Book with special request and immediately due reminder",
+          "request": {
+            "method": "POST",
+            "url": "{{URL}}/api/v1/bookings",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"campground\": \"{{CAMPGROUND_ID}}\",\n  \"checkIn\": \"{{EXTRA_CHECK_IN}}\",\n  \"checkOut\": \"{{EXTRA_CHECK_OUT}}\",\n  \"specialRequest\": \"Please reserve a shaded pitch for the email demo.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 201\", () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"EXTRA_BOOKING_ID\", pm.response.json().data._id);",
+                  "pm.test(\"Special request is saved\", () => pm.expect(pm.response.json().data.specialRequest).to.include(\"shaded pitch\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "15g Edit special request and queue update email",
+          "request": {
+            "method": "PATCH",
+            "url": "{{URL}}/api/v1/bookings/{{EXTRA_BOOKING_ID}}",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"specialRequest\": \"Please reserve a shaded pitch close to the restroom.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "15h Wait for confirmation, update and weather reminder",
+          "request": {
+            "method": "GET",
+            "url": "{{URL}}/api/v1/bookings/{{EXTRA_BOOKING_ID}}/notifications",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.collectionVariables.get(\"MAIL_POLL\")) pm.collectionVariables.set(\"MAIL_POLL\", 0);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const jobs = pm.response.json().data || [];",
+                  "const latestRevision = Math.max(0, ...jobs.map(j => j.revision));",
+                  "const required = [jobs.find(j => j.type === \"confirmation\"), jobs.find(j => j.type === \"update\" && j.revision === latestRevision), jobs.find(j => j.type === \"reminder\" && j.revision === latestRevision)];",
+                  "const ready = required.every(j => j && [\"sent\", \"preview\"].includes(j.status));",
+                  "const poll = Number(pm.collectionVariables.get(\"MAIL_POLL\") || 0);",
+                  "if (pm.response.code === 200 && !ready && poll < 18 && !jobs.some(j => j.status === \"failed\")) {",
+                  "  pm.collectionVariables.set(\"MAIL_POLL\", poll + 1);",
+                  "  console.log(\"Waiting for email worker, poll \" + (poll + 1));",
+                  "  setTimeout(() => pm.execution.setNextRequest(pm.info.requestName), 3000);",
+                  "} else {",
+                  "  pm.collectionVariables.set(\"MAIL_POLL\", 0);",
+                  "  pm.test(\"All three email types completed\", () => pm.expect(ready).to.eql(true));",
+                  "  console.log(\"Email delivery statuses\", required.map(j => ({ type: j?.type, status: j?.status })));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

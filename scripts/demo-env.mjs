@@ -1,0 +1,10 @@
+import 'dotenv/config';
+import fs from 'node:fs/promises';
+const required=['ADMIN_EMAIL','ADMIN_PASSWORD','SMTP_USER'];
+for(const key of required)if(!process.env[key])throw new Error(`Set ${key} in your local .env first.`);
+await fs.mkdir('.local',{recursive:true,mode:0o700});
+const environment={name:'Butterbear Local',_postman_variable_scope:'environment',values:[['URL','http://localhost:5005'],['ADMIN_EMAIL',process.env.ADMIN_EMAIL],['ADMIN_PASSWORD',process.env.ADMIN_PASSWORD],['DEMO_EMAIL',process.env.DEMO_EMAIL||process.env.SMTP_USER]].map(([key,value])=>({key,value,enabled:true,type:key==='ADMIN_PASSWORD'?'secret':'default'}))};
+const file='.local/Butterbear-Local.postman_environment.json';
+await fs.writeFile(file,JSON.stringify(environment,null,2),{mode:0o600});await fs.chmod(file,0o600);
+console.log('Created ignored local Postman environment: '+file);
+console.log('Contains credentials. Keep local; do not share or commit it.');

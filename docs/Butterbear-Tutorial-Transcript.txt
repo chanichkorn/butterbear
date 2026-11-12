@@ -1,0 +1,32 @@
+Butterbear five-minute tutorial
+Synthetic English narration; actual implementation walkthrough.
+
+0:00 - 0:30 | Build Butterbear extras
+This tutorial explains how the Butterbear extra requirements are implemented. The project uses Express, Mongoose, MongoDB Atlas, and Nodemailer. The first half covers the data model and routes assigned to Nemo for review. The second half covers email delivery and weather assigned to Aon. These assignments describe learning and maintenance responsibilities. The implementation is AI assisted, and this video uses synthetic narration.
+
+0:30 - 1:00 | Store favorites on the user
+Start with the User schema. Favorites is an array of campground references. After authenticating the user, the add route checks that the campground is active and uses MongoDB add to set. This prevents duplicate favorites, including concurrent additions. The remove route uses pull. The list route populates active campground references and returns only the signed in user’s list. Demo the add, list, and remove requests together.
+
+1:00 - 1:30 | Save a special request
+Next, add specialRequest to the Booking schema. It defaults to an empty string and has a limit of two thousand characters. The shared text validator checks the type and length, then trims whitespace. Creation stores the value, and editing preserves the old request when the field is omitted. The request also enters the notification snapshot so each email describes the version of the booking that caused it.
+
+1:30 - 2:00 | Validate the booking dates
+Use calendar dates in the campground’s time zone instead of counting fixed twenty four hour periods. The booking validator permits one through three nights and rejects a check in whose two PM arrival time has passed. It calculates the reminder for nine AM on the previous day. If that reminder time has already passed but check in remains in the future, the job is due now. This supports a genuine live demonstration.
+
+2:00 - 2:30 | Persist the booking and email jobs
+Create the booking and its initial notification jobs in a single MongoDB document write. The helper builds a confirmation due immediately and a reminder with its scheduled time. Each job stores the recipient, revision, and a snapshot of booking details. Return HTTP two hundred and one with emailStatus queued after persistence. Do not wait for SMTP inside the request. This keeps a slow email provider from blocking the booking response.
+
+2:30 - 3:00 | Handle edits and admin access
+Aon’s section starts with booking edits. Normal users receive an owner filter, while an admin can manage any user’s booking. Revalidate the new dates and special request. The update matches the current revision and increments it while appending an update email and replacement reminder. A concurrent change returns a conflict instead of silently overwriting another edit. The email recipient remains the booking owner, even when an admin performs the edit.
+
+3:00 - 3:30 | Claim and deliver notification jobs
+The worker polls every five seconds and atomically claims a due pending job. A claim token and lease identify the worker processing it. Before sending, it checks that the booking is still active and that a reminder belongs to the latest revision. A successful SMTP call records sent status. Failures retry with increasing delays and stop after five attempts. Delivery is at least once, so a crash after SMTP acceptance can produce a duplicate.
+
+3:30 - 4:00 | Fetch weather for the check-in date
+For reminders, call Open Meteo using the campground coordinates, time zone, and check in date. Request daily temperature, rain probability, and weather code. The service verifies the returned date and numeric values, then caches a valid forecast for fifteen minutes. The provider supports dates from today through fifteen days ahead. If weather is unavailable, the worker sends a clear unavailable note instead of losing the booking reminder. The external API is weather, not email.
+
+4:00 - 4:30 | Send real email through Gmail
+Configure Nodemailer for Gmail SMTP on port five hundred eighty seven with STARTTLS. Keep the Gmail app password and MongoDB connection string in the ignored environment file. Never include them in the repository, slides, or recording. Startup verifies the SMTP connection. Each plain text email includes the booking ID, campground, dates, and special request. The reminder adds temperature, rain probability, and Open Meteo attribution. A sent state records SMTP acceptance; inspect the real inbox for receipt.
+
+4:30 - 5:00 | Demonstrate and explain the result
+Finish by running the ordered presentation collection. The core folder proves registration, login, campground viewing, booking rules, user operations, logout, and admin operations. Show the class and sequence diagrams before running the extras folder. Then inspect the real Gmail inbox for confirmation, update, and the weather reminder. Explain that the backend must remain running for scheduled work. Both teammates should study their assigned source files, rehearse the seven minute presentation, and describe only contributions they actually made.

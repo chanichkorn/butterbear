@@ -12,7 +12,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\small Butterbear technical handoff}
-\fancyhead[R]{\small v1 / bf6eeb2}
+\fancyhead[R]{\small Presentation edition / 12 Nov 2026}
 \fancyfoot[L]{\small Nemo and Aon}
 \fancyfoot[R]{\small\thepage}
 \setlength{\parindent}{0pt}
@@ -24,14 +24,14 @@
 \lstset{basicstyle=\ttfamily\footnotesize,breaklines=true,columns=fullflexible,keepspaces=true,showstringspaces=false,backgroundcolor=\color{paper},frame=single,rulecolor=\color{paper},xleftmargin=2mm,xrightmargin=2mm,aboveskip=5pt,belowskip=5pt}
 \newcommand{\code}[1]{{\small\nolinkurl{#1}}}
 \newcommand{\page}[2]{\clearpage{\color{navy}\LARGE\bfseries #1\par}\vspace{2mm}{\color{muted}#2\par}\vspace{2mm}}
-\newcommand{\topic}[1]{\vspace{2mm}{\large\bfseries\color{navy}#1\par}}
+\newcommand{\topic}[1]{\par\vspace{2mm}{\large\bfseries\color{navy}#1\par}}
 \newcommand{\say}[1]{\begin{quote}\itshape #1\end{quote}}
 \begin{document}
 {\color{navy}\Huge\bfseries Butterbear\par}
 {\LARGE Campground Booking REST API\par}
 \vspace{3mm}
 {\large Technical handoff and presentation guide\par}
-Prepared for \textbf{Nemo and Aon}. Reviewed against commit \code{bf6eeb2}, dated 11 November 2026.
+Prepared for \textbf{Nemo and Aon}. Updated 12 November 2026 after the Atlas, Gmail, and ordered presentation demonstration were verified.
 
 \topic{What this document gives you}
 A requirement map, source-file guide, database explanation, endpoint reference, email and weather flows, setup instructions, demonstration sequence, and answers to likely professor questions. Read the overview together, then study your assigned technical packages.
@@ -46,7 +46,7 @@ Local folder & \code{/Users/nemo/Documents/GitHub/butterbear}\\
 Base API & \url{http://localhost:5005/api/v1}\\
 Health check & \url{http://localhost:5005/health}\\
 Backend & Node.js 22 or later, Express, MongoDB and Mongoose\\
-Demo email & Nodemailer with Ethereal test inboxes\\
+Demo email & Gmail SMTP with real inbox delivery confirmed\\
 External data & Open-Meteo weather forecast API\\
 Client & Postman collection in \code{postman/}\\
 \bottomrule
@@ -58,7 +58,7 @@ Users can register, log in, log out, browse campgrounds, maintain favorites, and
 Booking creation queues a confirmation and a reminder. Booking edits queue an update email and a replacement reminder. The reminder fetches the check-in forecast and includes it in the email.
 
 \topic{Current completion boundary}
-The API and integrations have been exercised locally. Ethereal receives test messages and exposes browser previews. Actual inbox delivery requires a real SMTP account and authorized sender. The brief permits MongoDB Atlas or PostgreSQL, so configure Atlas for submission. The development setup uses a separate local MongoDB database on port 27019.
+The API runs on localhost:5005 and now uses the separate Butterbear project on MongoDB Atlas. Two sample campgrounds and an admin account have been seeded. Gmail SMTP authentication succeeded, all three email types were sent, and Nemo confirmed receipt. The ordered core and extras workflow passed 43 assertions in the final live run; repeated polling can change the count. A temporary Open-Meteo failure occurred on the first run and recovered. This is a functional demonstration, not a performance guarantee.
 
 Butterbear has not been publicly deployed. A running Node process is required for reminders. The earlier VacQ AWS deployment belongs to a different project.
 
@@ -75,33 +75,34 @@ N1 & Nemo & Authentication, session storage, logout revocation, input validation
 N2 & Nemo & Campground browsing/admin management, favorites, unique membership, and pagination. Explain User/Campground fields in \code{models.js}. Demonstrate add, repeat add, list, and remove.\\
 N3 & Nemo & Booking creation, calendar-night validation, timezone conversion, and special requests. Explain \code{bookingDates()} and the create handler. Demonstrate three nights accepted and four rejected.\\
 A1 & Aon & Booking reads/edits/cancellation, owner/admin scope, revision checking, and notification visibility. Explain update/cancel handlers. Demonstrate another user's rejection and an admin edit.\\
-A2 & Aon & Confirmation/update emails, embedded jobs, claims, leases, retries, cancellation handling, and SMTP/Ethereal. Explain \code{mail.js} and \code{notifications.js}. Show email previews.\\
+A2 & Aon & Confirmation/update emails, embedded jobs, claims, leases, retries, cancellation handling, and SMTP/Ethereal. Explain \code{mail.js} and \code{notifications.js}. Show the real confirmation and update messages in Gmail.\\
 A3 & Aon & Weather API, forecast validation/cache/fallback, reminder rescheduling, startup, and end-to-end verification. Explain \code{weather.js}, \code{server.js}, and test strategy. Show the weather reminder.\\
 \bottomrule
 \end{tabularx}
 
 The allocation is 50/50 by complete responsibility packages and speaking time. Authentication and booking rules require different work from external integrations, so source-line counts are not a reliable measure of equality.
 
-\topic{Suggested 12-minute presentation}
+\topic{Seven-minute presentation, then three-minute Q\&A}
 \begin{tabularx}{\linewidth}{@{}p{25mm}p{18mm}X@{}}
 \toprule
-Time & Speaker & Coverage\\
+Time & Speaker & Required presentation order\\
 \midrule
-0:00--1:00 & Nemo & Scope, architecture, original requirements\\
-1:00--3:00 & Nemo & Authentication and campground/favorite behavior\\
-3:00--6:00 & Nemo & Booking dates, special request, creation demo\\
-6:00--8:00 & Aon & Ownership/admin scope, edit and revision behavior\\
-8:00--10:00 & Aon & Job persistence, email worker, message previews\\
-10:00--12:00 & Aon & Weather reminder, verification, deployment boundary\\
-Q\&A & Both & Package lead answers first. Both know the booking lifecycle\\
+0:00--0:40 & Nemo & Use case diagram (slide 1; requirement step 0)\\
+0:40--3:30 & Nemo & Runner core folder: registration, login, products, booking validation, own CRUD, logout, admin login and booking CRUD (steps 1--12)\\
+3:30--4:10 & Aon & Class diagram (slide 3; step 13)\\
+4:10--4:50 & Aon & Sequence diagram (slide 4; step 14)\\
+4:50--6:35 & Aon & Runner extras folder and real Gmail inbox (step 15)\\
+6:35--7:00 & Aon & Equal responsibility packages and actual GitHub Contributors (step 16)\\
+7:00--10:00 & Both & Questions; technical package lead answers first\\
 \bottomrule
 \end{tabularx}
+Nemo and Aon each speak for 3 minutes 30 seconds. Slide 2 is the cue to switch to Runner; it is not a substitute for running the API. The core folder intentionally retains a second user booking so admin steps can demonstrate a valid record after the first booking is deleted.
 
 \topic{Shared preparation}
 \begin{enumerate}
 \item Each person opens the files in their packages and traces a request from input to database write and response.
-\item Nemo creates the booking that Aon edits. Both keep the same saved BOOKING\_ID.
-\item Aon inspects email previews before cancellation. Cancellation prevents further worker claims.
+\item The core folder saves BOOKING\_ID and a separate ADMIN\_BOOKING\_ID. Keep the collection state between the core and extras runs.
+\item Aon shows real email delivery for the extras booking before cancellation. The core folder deletes its own demonstration bookings in the required order.
 \item Swap roles once in rehearsal. Both must explain why login alone does not authorize access to someone else's booking.
 \end{enumerate}
 
@@ -145,7 +146,7 @@ A4 reflects the agreed extension. The reminder is retained and enriched with an 
 \item \textbf{Authentication and confidentiality.} Password hashing, signed JWTs, stored sessions, role checks, and owner filters protect private bookings. Production needs HTTPS for tokens in transit.
 \item \textbf{Three-second response target.} The verified local user workflow's slowest request was weather at 916 ms. The admin workflow's slowest was 276 ms. These are observations, not a production latency guarantee or load-test result.
 \item \textbf{Postman usability.} The collection supplies user, cancellation/logout, and admin workflows. No frontend is required by the brief.
-\item \textbf{Database constraint.} The implementation supports MongoDB Atlas. Configure Atlas for submission because the current local development database differs from the stated Atlas/PostgreSQL constraint.
+\item \textbf{Database constraint.} The demonstration now uses MongoDB Atlas, satisfying the stated Atlas/PostgreSQL database constraint.
 \end{itemize}
 
 \page{3. Architecture and source map}{One Express API with a database-backed email worker}
@@ -176,7 +177,7 @@ File & Responsibility\\
 \code{src/services/weather.js} & Provider URL, timeout, data validation, normalization, bounded cache.\\
 \code{scripts/seed.js} & Sample campgrounds and optional admin from local environment settings.\\
 \code{test/api.test.js} & Ten tests using isolated MongoDB and controlled weather/mail dependencies.\\
-\code{postman/Butterbear.postman_collection.json} & Runnable examples, demo variables, assertions, setup notes.\\
+\code{postman/Butterbear-Presentation.postman_collection.json} & Ordered core and extras presentation workflows, variables, assertions.\\
 \code{.env.example} & Safe template without real credentials.\\
 \bottomrule
 \end{tabularx}
@@ -224,10 +225,10 @@ Fields & Purpose\\
 \topic{Indexes and privacy}
 Unique email prevents duplicate accounts, including concurrent registration attempts. Booking indexes cover user/status and status/notification retry time. Session expiry uses a TTL index.
 
-Notifications are excluded by default using \code{select: false}. Creation explicitly strips them from the public booking result. The notification endpoint returns a limited summary after owner/admin checks. Treat preview URLs as private links.
+Notifications are excluded by default using {\small\texttt{\detokenize{select: false}}}. Creation explicitly strips them from the public booking result. The notification endpoint returns a limited summary after owner/admin checks. Treat preview URLs as private links.
 
 \topic{Logical deletion}
-Cancellation retains the booking with \code{status: 'cancelled'}. Active lists and normal reads hide it. The owned notification endpoint can still inspect its history. Campground deactivation likewise retains its record with \code{active=false}.
+Cancellation retains the booking with {\small\texttt{\detokenize{status: 'cancelled'}}}. Active lists and normal reads hide it. The owned notification endpoint can still inspect its history. Campground deactivation likewise retains its record with \code{active=false}.
 
 The model does not allocate individual pitches or enforce campground capacity. Those concepts were not specified in the supplied requirements.
 
@@ -316,7 +317,7 @@ The list supports \code{?page=1&limit=25}, maximum limit 100 and maximum page 10
 Deactivation returns 409 if the check finds active future bookings. It sets active false. This check and a concurrent booking insertion are separate operations, so it is not a cross-document transactional guarantee.
 
 \topic{Favorites}
-Add uses \code{\$addToSet}, preventing duplicate memberships during concurrent requests. Remove uses \code{\$pull} and succeeds when already absent.
+Add uses \texttt{\$addToSet}, preventing duplicate memberships during concurrent requests. Remove uses \texttt{\$pull} and succeeds when already absent.
 
 Add requires an active campground. Removal only needs a valid ID, allowing removal after deactivation. Favorite listing populates active campgrounds only.
 
@@ -352,7 +353,7 @@ GET & \code{/bookings/:id/notifications} & 200, owner/admin summaries\\
 \end{lstlisting}
 Replace example dates when they are past. This is a three-night stay. The API supplies the owner from authentication. Special request is optional, trimmed, and limited to 2,000 characters. It is included as plain text in emails.
 
-A successful result includes \code{emailStatus: "queued"}. It proves the jobs were persisted, not that a recipient already received a message.
+A successful result includes {\small\texttt{\detokenize{emailStatus: "queued"}}}. It proves the jobs were persisted, not that a recipient already received a message.
 
 \topic{Edit example}
 \begin{lstlisting}
@@ -558,7 +559,7 @@ Check \url{http://localhost:5005/health}. If it succeeds, the API is already lis
 cd /Users/nemo/Documents/GitHub/butterbear
 npm start
 \end{lstlisting}
-The prepared ignored .env contains generated admin credentials, a JWT secret, and \code{mongodb://127.0.0.1:27019/butterbear}. Inspect locally for the admin demo and keep secrets out of slides. A second server on the same port gives an address-in-use error.
+The prepared ignored .env contains the Atlas URI for database butterbear, Gmail SMTP settings, admin credentials, and a JWT signing secret. Inspect locally for the admin demo and keep all secrets out of slides, recordings, Postman exports, and GitHub. A second server on the same port gives an address-in-use error.
 
 \topic{Fresh checkout}
 \begin{lstlisting}
@@ -574,63 +575,47 @@ npm start
 \end{lstlisting}
 Node 22 or later is required. The repository is public, so Aon can clone it without a collaborator invitation.
 
-The example URI assumes MongoDB on port 27017. The prepared local instance uses 27019. A fresh checkout does not automatically install/start persistent MongoDB. Use a normal local installation for development or Atlas. Configure Atlas for the submission database constraint.
+Aon must configure his own local .env; it is deliberately absent from GitHub. Use the Butterbear Atlas project and an approved database user, and add the current client IP to its access list. The current project allows only Nemo's approved public IP; a different network or teammate machine may need a separate entry. Keep each environment setting on its own line.
 
 \topic{Seeding}
 The seed upserts Khao Yai and Chiang Mai sample records by name without overwriting existing fields. With ADMIN\_EMAIL/PASSWORD, it creates an absent admin. An address already owned by a normal user causes an error. It does not promote a normal account or reset an existing admin password.
 
-\topic{Restart this Mac's local MongoDB if necessary}
-The development setup downloaded a MongoDB binary through the test dependency. From the project folder, this machine-specific command reopens the prepared persistent data directory.
-\begin{lstlisting}
-node_modules/.cache/mongodb-memory-server/mongod-arm64-darwin-7.0.24 \
-  --dbpath .local/mongodb --port 27019 --bind_ip 127.0.0.1 \
-  --logpath .local/mongodb.log --fork
-\end{lstlisting}
-On another machine, use its MongoDB installation or Atlas. Do not start a second process on an occupied database port.
+\topic{Atlas and Gmail setup}
+The Atlas project and free cluster are named Butterbear. The database is \code{butterbear}; the application database user is \code{butterbear_app}. The database password is set by the owner and is not recoverable from this document. Use Atlas Connect to obtain the URI and URL-encode special characters in the password.
+
+Gmail uses \code{smtp.gmail.com}, port 587, \code{SMTP_SECURE=false} and a Google app password. \code{MAIL_FROM} should use the authorized sender. \code{SMTP_USER/PASSWORD}, \code{MONGO_URI} and \code{JWT_SECRET} must remain in the ignored .env. Preserve the password in a password manager. Do not record the environment file.
 
 \topic{Lifecycle and configuration}
 Startup validates settings, connects MongoDB, initializes indexes, creates/verifies mail transport, starts the worker, and listens on port 5005. SIGINT/SIGTERM stops HTTP, waits for the active worker tick, closes mail, and disconnects the database.
 
 Set TRUST\_PROXY=1 only behind the single trusted reverse proxy for which it is intended. The earlier AWS deployment has not been reused for Butterbear.
 
-\page{13. Postman demonstration script}{Nemo creates the booking; Aon demonstrates its lifecycle and email}
+\page{13. Ordered Runner demonstration}{Use the presentation collection and keep state between its two folders}
 
-The collection is \code{postman/Butterbear.postman_collection.json}. It is imported into Nemo's Postman workspace as \textbf{Butterbear Campground Booking}. URL defaults to \code{http://localhost:5005}. It uses collection variables, so no Postman environment is required.
+Import \code{postman/Butterbear-Presentation.postman_collection.json}. Its name is \textbf{Butterbear Final Presentation}. The older collection remains for learning; use the new collection for the assessed presentation.
 
-\topic{Nemo's demonstration}
-\begin{enumerate}
-\item Open User workflow. For a fresh run, clear EMAIL and PASSWORD. The folder script generates new demo values only when those variables are empty.
-\item Run Register user, Log in, and My profile. Explain password hashing and the test script that stores TOKEN.
-\item Run List campgrounds, which saves CAMPGROUND\_ID. Open its details and explain the coordinates/timezone.
-\item Add a favorite, inspect My favorites, repeat add to show uniqueness, then remove it.
-\item Create the booking with a special request. The collection generates tomorrow as CHECK\_IN and four days from today as CHECK\_OUT, a three-night stay in Bangkok.
-\item Show 201, saved BOOKING\_ID, and emailStatus queued. Hand this booking to Aon.
-\end{enumerate}
+\topic{Local credential environment}
+Use the ignored local environment generated by {\small\texttt{\detokenize{npm run demo:env}}}. Import \code{.local/Butterbear-Local.postman_environment.json} into Postman and keep its values local. It contains \code{URL}, \code{ADMIN_EMAIL}, \code{ADMIN_PASSWORD}, and \code{DEMO_EMAIL}. Treat it as secret; do not sync it to a shared/cloud workspace or export it into the repository. \code{DEMO_EMAIL} is the Gmail inbox that you control; the collection creates a unique plus-address for each run.
 
-\topic{Aon's demonstration}
-\begin{enumerate}
-\item Read the same booking and edit the special request. Show the increased revision and queued update.
-\item Refresh notification summaries after at least five seconds; SMTP may add more delay.
-\item Open confirmation/update preview URLs and inspect the special request.
-\item Open the current-revision reminder and identify temperature/rain values plus Open-Meteo attribution.
-\item Explain why tomorrow's booking after 09:00 today gets an immediate reminder. Before 09:00, it is scheduled later today. A valid same-day booking before 14:00 is another demonstration option.
-\item Set ADMIN\_EMAIL/PASSWORD from local seed configuration. Admin login changes TOKEN. Show admin reads/edits/cancellation with the test booking ID.
-\item Cancel only after inspecting emails. Finish with logout and rejection of the old session token.
-\end{enumerate}
+\topic{Nemo: run the core folder at 0:40}
+Select \textbf{1 Core steps 01-12} in Runner. Use one iteration. Keep the ordered requests together. The collection creates fresh normal-user credentials, captures tokens and IDs, validates registration, demonstrates a three-night booking and a rejected four-night stay, then views, edits and deletes the user's booking. Logout must invalidate the old token. Admin login then views, edits and deletes the separately retained user booking. Expected 400/401/404 responses are passing negative tests.
 
-\topic{Runner selection}
-Run \textbf{User workflow} alone to reproduce 14 requests and 16 assertions. Admin examples need credential variables and an existing test booking. Running all folders blindly can cancel before email inspection and fail admin login with empty credentials.
+\topic{Aon: diagrams before extras}
+At 3:30 return to slides 3 and 4 for Class and Sequence Diagrams. At 4:50 run \textbf{2 Extra credits step 15} using the same collection variables. It logs in as the new normal user, adds/lists/removes a favorite, requests external weather, creates a booking with a special request, edits it, and polls for confirmation, update, and the latest reminder. Do not clear the core run's variables before extras.
 
-The collection intentionally has no wait for SMTP completion. A passed Runner proves the synchronous API flow. Refresh notification summaries separately to prove asynchronous email behavior.
+\topic{Show the real inbox}
+Show all three message types and identify the campground, dates, changed request, forecast, and Open-Meteo attribution. Sent means SMTP acceptance; the received inbox message is the delivery evidence. The extras booking remains active so delivery can complete. The collection chooses a valid check-in with an immediately due reminder: before 09:00 Bangkok it uses today's future 14:00 arrival, otherwise tomorrow. The API still uses the normal scheduling rule; no secret test endpoint or manual clock override is used.
 
-\topic{Repeated-run pitfalls}
-\begin{itemize}
-\item Retained EMAIL causes a second Register to return 409. Clear demo credentials for a new account or skip Register and log in.
-\item Missing/stale booking IDs require a fresh booking.
-\item Another user's token correctly returns 404 for this booking.
-\item Admin login replaces TOKEN. Log in as the demo user again before describing an ordinary-user operation.
-\item Postman may store recognized credentials in Vault. Keep the demo on the local app and ensure referenced values are available. This project does not configure a cloud Monitor.
-\end{itemize}
+\topic{Newman alternative}
+Run the core folder, show the diagrams, then run extras:
+\begin{lstlisting}
+npm run demo -- --folder "1 Core steps 01-12"
+# Show the Class and Sequence Diagrams.
+npm run demo -- --folder "2 Extra credits step 15"
+\end{lstlisting} The wrapper loads local credentials and retains only the required collection state in ignored .local between runs. The full {\small\texttt{\detokenize{npm run demo}}} is for rehearsal, since it runs extras without pausing for the diagrams.
+
+\topic{Operational failures}
+A weather 503 is a real temporary provider failure, not a passing forecast demonstration. Retry once the provider recovers. The reminder sends a clear unavailable-weather note if necessary. If mail fails, inspect owned notification statuses; attempts 1--4 retry after 1, 2, 4 and 8 minutes. A failed job does not delete the booking. API/DB/SMTP should be checked before the timed presentation.
 
 \page{14. Verification and failure demonstrations}{Know what the tests prove and what remains environment-dependent}
 
@@ -652,18 +637,17 @@ No. & Coverage in \code{test/api.test.js}\\
 \bottomrule
 \end{tabularx}
 
-Run \code{npm test}. Tests start an isolated temporary MongoDB and shut it down. They do not touch demo data or rely on real inbox delivery. Mail stream/stub transports and controlled weather responses make failure cases reproducible.
+Run {\small\texttt{\detokenize{npm test}}}. Tests start an isolated temporary MongoDB and shut it down. They do not touch demo data or rely on real inbox delivery. Mail stream/stub transports and controlled weather responses make failure cases reproducible.
 
-\topic{Live implementation-time checks}
+\topic{Live checks on 12 November 2026}
 \begin{itemize}
-\item User workflow passed 14 requests and 16 assertions.
-\item Admin workflow passed seven requests and seven assertions.
-\item Total live checks were 23 assertions across 21 requests.
-\item Open-Meteo returned a real forecast.
-\item A separate Ethereal SMTP test was accepted.
-\item The running API produced confirmation, update, and current-reminder previews. The old reminder was superseded.
+\item Atlas connected and pinged; two sample campgrounds and the configured admin account were seeded.
+\item The ordered presentation workflow passed 43 assertions with no failures in the final live run (31 requests including repeated status polling).
+\item Gmail SMTP accepted confirmation, update, and the latest weather reminder. Nemo confirmed real inbox receipt.
+\item Open-Meteo returned forecasts for both sample campgrounds. The first full run encountered a temporary weather failure; a later request and repeat run succeeded.
+\item An isolated workflow check passed 39 assertions using a temporary MongoDB and a simulated mail transport. This is distinct from real SMTP delivery evidence.
 \end{itemize}
-These are recorded implementation-time results. IDs, weather, timestamps, and preview links change. Opening this document does not rerun the tests.
+IDs, forecasts, dates, number of poll requests, and generated addresses change on each run. This document records completed checks; opening it does not rerun them.
 
 \topic{Useful negative demonstrations}
 \begin{enumerate}
@@ -700,7 +684,7 @@ MongoDB retains pending jobs. A new worker reads due work and reclaims expired l
 The public weather route returns a service error. The reminder still sends with a forecast-unavailable note. The booking remains confirmed.
 
 \topic{Did a real customer receive email?}
-The demo verifies Ethereal SMTP processing and browser previews. Real mailbox delivery requires production SMTP credentials and an authorized sender. Do not describe previews as proof of customer inbox delivery.
+The current demo uses Gmail SMTP, and Nemo confirmed receipt of the actual test messages. The older Ethereal mode remains available for development; its previews alone are not real mailbox delivery evidence.
 
 \topic{Is the three-second target guaranteed?}
 Measured local requests were below three seconds and weather uses a two-second timeout. There is no production load test or hard end-to-end deadline. Database/network/load conditions still matter.
@@ -715,8 +699,8 @@ Explain the three assigned review/demo packages, the tests each person verified,
 
 \topic{Known implementation boundaries}
 \begin{itemize}
-\item Atlas configuration remains necessary for literal compliance with the brief's Atlas/PostgreSQL database constraint. The current demo database is local MongoDB.
-\item Real email requires SMTP settings. Ethereal provides test previews.
+\item The current demonstration uses Atlas. The Express API still runs on localhost; cloud deployment is not required.
+\item Gmail SMTP is configured locally and real delivery was confirmed. The credentials are intentionally excluded from the repository.
 \item There is no public Butterbear deployment. A running backend is needed for reminders.
 \item Retries can duplicate an accepted message after a crash. In-flight emails cannot be recalled by concurrent edits/cancellation.
 \item Cancellation prevents new job claims. Historical pending jobs can remain in the document. Some non-reminder jobs can still appear pending in its summary.
@@ -733,17 +717,20 @@ Explain the three assigned review/demo packages, the tests each person verified,
 \item Postman URL is port 5005. Sample campground records exist.
 \item Demo credentials/IDs are current. Secrets are kept out of slides.
 \item Nemo explains bcrypt, session logout, favorite uniqueness, and calendar-night validation.
-\item Aon explains revisions, worker claims/leases, retries, forecast lookup, and Ethereal.
-\item Reminder timing is checked. Email previews are inspected before cancellation.
+\item Aon explains revisions, worker claims/leases, retries, forecast lookup, and Gmail SMTP.
+\item Reminder timing is checked. Real messages are inspected before cancelling the extras booking.
 \item Both can demonstrate an authorization failure and explain the complete booking lifecycle.
 \item The team describes its actual review, verification, and presentation work accurately.
 \end{enumerate}
 
+\topic{Submission items outside the backend}
+The prepared package includes a six-slide PowerPoint/PDF, three editable diagrams, the ordered collection, this handoff, a five-minute tutorial MP4 with synthetic narration, and its transcript/source slides. The deck links to the repository and tutorial. Confirm that the instructor accepts synthetic narration; both presenters should be able to explain and demonstrate the code themselves. Aon's GitHub identity and genuine contribution evidence remain deferred at Nemo's request. Do not fabricate commits. Upload the presentation to MCV and verify its attachment yourself before the applicable deadline; no LMS submission has been made by this workflow.
+
 \topic{Rebuilding this handoff}
-Compile this standalone source with XeLaTeX, LuaLaTeX, or \code{tectonic Butterbear-Handoff.tex}. No external images are needed. The source uses Times New Roman/Menlo when installed and falls back to TeX Gyre Termes/Latin Modern Mono.
+Compile this standalone source with XeLaTeX, LuaLaTeX, or {\small\texttt{\detokenize{tectonic Butterbear-Handoff.tex}}}. No external images are needed. The source uses Times New Roman/Menlo when installed and falls back to TeX Gyre Termes/Latin Modern Mono.
 
 \topic{Source references}
-The code at \url{https://github.com/chanichkorn/butterbear/tree/bf6eeb2} is the implementation authority. Start at app.js, then inspect auth.js, models.js, validation.js and services. Recheck this handoff after those files change.
+The code at \url{https://github.com/chanichkorn/butterbear} is the implementation authority. Start at app.js, then inspect auth.js, models.js, validation.js and services. Recheck this handoff after those files change.
 
 The original brief is \emph{SW Dev Practice Project Listings}, Project 2 on page 6, with non-functional requirements/constraints on pages 2--3. Butterbear additions and the weather-in-email extension were provided in the project conversation.
 
