@@ -4,7 +4,7 @@
 \setmainfont{Times New Roman}\setmonofont{Menlo}
 \definecolor{forest}{HTML}{173B32}
 \hypersetup{colorlinks=true,urlcolor=forest,linkcolor=forest}
-\pagestyle{fancy}\fancyhf{}\fancyhead[L]{Butterbear presenter guide}\fancyhead[R]{12 November 2026}\fancyfoot[R]{\thepage}
+\pagestyle{fancy}\fancyhf{}\fancyhead[L]{Butterbear presenter guide}\fancyhead[R]{14 November 2026}\fancyfoot[R]{\thepage}
 \setlength{\parindent}{0pt}\setlength{\parskip}{5pt}\setlength{\emergencystretch}{3em}
 \setlist{nosep,leftmargin=5mm}\renewcommand{\arraystretch}{1.2}
 \lstset{basicstyle=\ttfamily\small,breaklines=true,columns=fullflexible,showstringspaces=false}
@@ -17,12 +17,13 @@ Nemo and Aon each speak for 3:30. Use this guide for rehearsal; the detailed han
 \topic{Presentation order and timing}
 \begin{tabularx}{\linewidth}{@{}p{24mm}p{15mm}X@{}}
 \toprule Time & Lead & Screen / action\\\midrule
-0:00--0:40 & Nemo & Slide 1: Use Case Diagram\\
-0:40--3:30 & Nemo & Slide 2, then Runner core folder: required steps 1--12\\
-3:30--4:10 & Aon & Slide 3: Class Diagram\\
-4:10--4:50 & Aon & Slide 4: Sequence Diagram\\
-4:50--6:35 & Aon & Slide 5, extras folder, real Gmail inbox\\
-6:35--7:00 & Aon & Slide 6: work split and GitHub Contributors\\
+0:00--0:30 & Nemo & Slide 1: Core Use Case Diagram\\
+0:30--0:50 & Nemo & Slide 2: Additional Requirements Use Case Diagram\\
+0:50--3:30 & Nemo & Slide 3, then Runner core folder: required steps 1--12\\
+3:30--4:10 & Aon & Slide 4: Class Diagram\\
+4:10--4:50 & Aon & Slide 5: Sequence Diagram\\
+4:50--6:35 & Aon & Slide 6, extras folder, real Gmail inbox\\
+6:35--7:00 & Aon & Slide 7: work split and GitHub Contributors\\
 7:00--10:00 & Both & Questions\\\bottomrule
 \end{tabularx}
 \topic{Rehearsal commands}
@@ -45,12 +46,12 @@ Import \texttt{postman/Butterbear-Presentation.postman\_collection.json}. Its di
 Open slides, the terminal/Runner, and the project inbox. Close the .env tab and hide unrelated email. The extras booking stays active until email inspection. Do not show tokens, database passwords, Gmail app passwords or exported secret environments.
 
 \page{Nemo: 0:00--3:30}
-\topic{0:00--0:40 / slide 1}
-``Butterbear is a campground booking API. A normal user can register, sign in, browse campgrounds, and manage their own bookings. An admin can manage any booking. Our additions are favorite campgrounds, special requests, and booking emails. A scheduled worker sends reminders with a forecast from Open-Meteo. We run Express locally and store the data in MongoDB Atlas.''
+\topic{0:00--0:50 / slides 1 and 2}
+``Butterbear is a campground booking API. Campground browsing is public for visitors, registered users, and admins. A normal user can register, sign in, and manage their own bookings. An admin can manage any booking. Our additions are favorite campgrounds, special requests, and booking emails. A scheduled worker sends reminders with a forecast from Open-Meteo. We run Express locally and store the data in MongoDB Atlas.''
 
-Point to the User and Admin actors, then the worker and external services. Use the diagram as the introduction; avoid an extra title slide.
+Use slide 1 for user/admin booking functions and slide 2 for favorites, special requests and external services. Explain mandatory include behavior and optional extend behavior. Keep the combined introduction to 50 seconds.
 
-\topic{0:40--1:20 / begin Runner core folder}
+\topic{0:50--1:20 / begin Runner core folder}
 ``We demonstrate the core requirements in one ordered Runner workflow. First, registration with a missing phone is rejected. Valid registration creates a normal user. Login saves a token for later requests. The campground list provides the ID used by the booking requests.''
 
 Start the whole core folder once. Explain results after completion, in the listed order. Expected error responses are successful validation checks.
@@ -68,13 +69,13 @@ Show the expected 401 assertion. Keep normal-user and admin stages distinct when
 \topic{2:45--3:30 / admin operations}
 ``The admin logs in with a seeded account and can view, edit, and delete a booking belonging to the normal user. The collection creates a second booking for this stage, because the first one has already been deleted. These passing assertions show the full required user and admin lifecycle. Aon will now explain the data model and the asynchronous email flow.''
 
-Do not manually issue each request. Return to slide 3 by 3:30, even if the Runner finished much earlier.
+Do not manually issue each request. Return to slide 4 by 3:30, even if the Runner finished much earlier.
 
 \page{Aon: 3:30--7:00}
-\topic{3:30--4:10 / slide 3, Class Diagram}
+\topic{3:30--4:10 / slide 4, Class Diagram}
 ``User, Campground and Booking are the main models. A booking references one user and one campground. User stores favorite campground IDs. A session stores the token identifier and expiry so logout can revoke it. Notifications are embedded inside a booking, so a successful booking write also persists its required email work. Admin is a value of User.role, not a separate subclass.''
 
-\topic{4:10--4:50 / slide 4, Sequence Diagram}
+\topic{4:10--4:50 / slide 5, Sequence Diagram}
 ``The API validates the session and dates, then saves the booking and email jobs together. It returns created with emailStatus queued. Separately, the worker claims a due job. For a reminder it fetches the check-in forecast, sends the email through Gmail, and records the result. Each edit increases the booking revision, so an old reminder can be recognized and skipped.''
 
 \topic{4:50--5:25 / start extras folder}
@@ -85,9 +86,9 @@ Start the extras folder. While it waits, explain that the usual reminder is due 
 \topic{5:25--6:35 / show Gmail}
 ``Here are the actual messages. The confirmation contains the initial booking details. The update contains the changed request. The reminder adds minimum and maximum temperature, rain probability, and the Open-Meteo source. If weather temporarily fails, we still send the reminder with a clear unavailable note. SMTP failures remain queued for retry. The backend must be running for the worker to send reminders.''
 
-Show the three messages, then return to slide 5. The tutorial link opens the five-minute instructional video; do not play the entire video during the seven-minute presentation.
+Show the three messages, then return to slide 6. The tutorial link opens the five-minute instructional video; do not play the entire video during the seven-minute presentation.
 
-\topic{6:35--7:00 / slide 6, work split}
+\topic{6:35--7:00 / slide 7, work split}
 ``Nemo owns the review packages for authentication, favorites, and booking creation. I own booking management, email delivery, and weather reminders. We split speaking time equally. The repository link and GitHub Contributors show the actual commit history. The implementation was AI assisted; we each need to understand and maintain the code we present.''
 
 Open Contributors only if the real history is ready. Aon's username and commits have not been fabricated. Stop at 7:00.
