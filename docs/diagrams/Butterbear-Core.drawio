@@ -1,0 +1,159 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" agent="Codex">
+  <diagram id="core-diagram" name="Core Diagram">
+    <mxGraphModel dx="1506" dy="931" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Arial;fontSize=36;fontStyle=1;fontColor=#173B34;" value="Butterbear | Use Case Diagram" vertex="1">
+          <mxGeometry height="44" width="1050" x="40" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" parent="1" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Arial;fontSize=18;fontColor=#64748B;" value="Campground Booking System — Core Functional Overview" vertex="1">
+          <mxGeometry height="28" width="1100" x="42" y="72" as="geometry" />
+        </mxCell>
+        <mxCell id="boundary" parent="1" style="rounded=1;whiteSpace=wrap;html=0;arcSize=2;strokeColor=#2D7D70;strokeWidth=2;fillColor=#FFFFFF;" value="" vertex="1">
+          <mxGeometry height="675" width="1100" x="280" y="158" as="geometry" />
+        </mxCell>
+        <mxCell id="syslabel" parent="1" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Arial;fontSize=11;fontStyle=1;fontColor=#2D7D70;" value="BUTTERBEAR  /  CAMPGROUND BOOKING SYSTEM" vertex="1">
+          <mxGeometry height="24" width="650" x="310" y="172" as="geometry" />
+        </mxCell>
+        <mxCell id="panel_access" parent="1" style="rounded=1;whiteSpace=wrap;html=0;arcSize=3;strokeColor=#DCEBE7;strokeWidth=1;fillColor=#FBFDFC;" value="" vertex="1">
+          <mxGeometry height="205" width="1050" x="305" y="215" as="geometry" />
+        </mxCell>
+        <mxCell id="panel_access_label" parent="1" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Arial;fontSize=16;fontStyle=1;fontColor=#64748B;" value="BROWSE &amp; AUTHENTICATION" vertex="1">
+          <mxGeometry height="28" width="500" x="331" y="225" as="geometry" />
+        </mxCell>
+        <mxCell id="panel_user" parent="1" style="rounded=1;whiteSpace=wrap;html=0;arcSize=3;strokeColor=#DCEBE7;strokeWidth=1;fillColor=#FBFDFC;" value="" vertex="1">
+          <mxGeometry height="385" width="600" x="305" y="435" as="geometry" />
+        </mxCell>
+        <mxCell id="panel_user_label" parent="1" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Arial;fontSize=16;fontStyle=1;fontColor=#64748B;" value="USER BOOKING MANAGEMENT" vertex="1">
+          <mxGeometry height="28" width="500" x="331" y="445" as="geometry" />
+        </mxCell>
+        <mxCell id="panel_admin" parent="1" style="rounded=1;whiteSpace=wrap;html=0;arcSize=3;strokeColor=#DCEBE7;strokeWidth=1;fillColor=#FBFDFC;" value="" vertex="1">
+          <mxGeometry height="385" width="430" x="925" y="435" as="geometry" />
+        </mxCell>
+        <mxCell id="panel_admin_label" parent="1" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Arial;fontSize=16;fontStyle=1;fontColor=#64748B;" value="ADMIN BOOKING MANAGEMENT" vertex="1">
+          <mxGeometry height="28" width="380" x="951" y="445" as="geometry" />
+        </mxCell>
+        <mxCell id="visitor" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=0;outlineConnect=0;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1.5;fontFamily=Arial;fontSize=14;fontStyle=1;fontColor=#173B34;" value="" vertex="1">
+          <mxGeometry height="100" width="60" x="125.0" y="272.0" as="geometry" />
+        </mxCell>
+        <mxCell id="user" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=0;outlineConnect=0;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1.5;fontFamily=Arial;fontSize=14;fontStyle=1;fontColor=#173B34;" value="" vertex="1">
+          <mxGeometry height="100" width="60" x="125.0" y="552.0" as="geometry" />
+        </mxCell>
+        <mxCell id="admin" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=0;outlineConnect=0;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1.5;fontFamily=Arial;fontSize=14;fontStyle=1;fontColor=#173B34;" value="" vertex="1">
+          <mxGeometry height="100" width="60" x="1420.0" y="547.0" as="geometry" />
+        </mxCell>
+        <mxCell id="browse" parent="1" style="ellipse;whiteSpace=wrap;html=0;aspect=fixed;strokeColor=#2D7D70;strokeWidth=1.5;fillColor=#FFFFFF;fontFamily=Arial;fontSize=18;fontColor=#173B34;spacing=10;" value="Browse Campgrounds" vertex="1">
+          <mxGeometry height="74" width="220" x="360" y="263" as="geometry" />
+        </mxCell>
+        <mxCell id="register" parent="1" style="ellipse;whiteSpace=wrap;html=0;aspect=fixed;strokeColor=#2D7D70;strokeWidth=1.5;fillColor=#FFFFFF;fontFamily=Arial;fontSize=18;fontColor=#173B34;spacing=10;" value="Register Account" vertex="1">
+          <mxGeometry height="74" width="220" x="360" y="343" as="geometry" />
+        </mxCell>
+        <mxCell id="login" parent="1" style="ellipse;whiteSpace=wrap;html=0;aspect=fixed;strokeColor=#2D7D70;strokeWidth=1.5;fillColor=#FFFFFF;fontFamily=Arial;fontSize=18;fontColor=#173B34;spacing=10;" value="Log In" vertex="1">
+          <mxGeometry height="74" width="230" x="685" y="263" as="geometry" />
+        </mxCell>
+        <mxCell id="logout" parent="1" style="ellipse;whiteSpace=wrap;html=0;aspect=fixed;strokeColor=#2D7D70;strokeWidth=1.5;fillColor=#FFFFFF;fontFamily=Arial;fontSize=18;fontColor=#173B34;spacing=10;" value="Log Out" vertex="1">
+          <mxGeometry height="74" width="230" x="685" y="343" as="geometry" />
+        </mxCell>
+        <mxCell id="create" parent="1" style="ellipse;whiteSpace=wrap;html=0;aspect=fixed;strokeColor=#2D7D70;strokeWidth=1.5;fillColor=#FFFFFF;fontFamily=Arial;fontSize=18;fontColor=#173B34;spacing=10;" value="Create Booking&#10;(1–3 nights)" vertex="1">
+          <mxGeometry height="74" width="260" x="580" y="463" as="geometry" />
+        </mxCell>
+        <mxCell id="viewown" parent="1" style="ellipse;whiteSpace=wrap;html=0;aspect=fixed;strokeColor=#2D7D70;strokeWidth=1.5;fillColor=#FFFFFF;fontFamily=Arial;fontSize=18;fontColor=#173B34;spacing=10;" value="View Own Bookings" vertex="1">
+          <mxGeometry height="74" width="260" x="580" y="553" as="geometry" />
+        </mxCell>
+        <mxCell id="editown" parent="1" style="ellipse;whiteSpace=wrap;html=0;aspect=fixed;strokeColor=#2D7D70;strokeWidth=1.5;fillColor=#FFFFFF;fontFamily=Arial;fontSize=18;fontColor=#173B34;spacing=10;" value="Edit Own Booking" vertex="1">
+          <mxGeometry height="74" width="260" x="580" y="643" as="geometry" />
+        </mxCell>
+        <mxCell id="deleteown" parent="1" style="ellipse;whiteSpace=wrap;html=0;aspect=fixed;strokeColor=#2D7D70;strokeWidth=1.5;fillColor=#FFFFFF;fontFamily=Arial;fontSize=18;fontColor=#173B34;spacing=10;" value="Delete Own Booking" vertex="1">
+          <mxGeometry height="74" width="260" x="580" y="733" as="geometry" />
+        </mxCell>
+        <mxCell id="viewany" parent="1" style="ellipse;whiteSpace=wrap;html=0;aspect=fixed;strokeColor=#2D7D70;strokeWidth=1.5;fillColor=#FFFFFF;fontFamily=Arial;fontSize=18;fontColor=#173B34;spacing=10;" value="View Any Booking" vertex="1">
+          <mxGeometry height="74" width="230" x="1025" y="513" as="geometry" />
+        </mxCell>
+        <mxCell id="editany" parent="1" style="ellipse;whiteSpace=wrap;html=0;aspect=fixed;strokeColor=#2D7D70;strokeWidth=1.5;fillColor=#FFFFFF;fontFamily=Arial;fontSize=18;fontColor=#173B34;spacing=10;" value="Edit Any Booking" vertex="1">
+          <mxGeometry height="74" width="230" x="1025" y="623" as="geometry" />
+        </mxCell>
+        <mxCell id="deleteany" parent="1" style="ellipse;whiteSpace=wrap;html=0;aspect=fixed;strokeColor=#2D7D70;strokeWidth=1.5;fillColor=#FFFFFF;fontFamily=Arial;fontSize=18;fontColor=#173B34;spacing=10;" value="Delete Any Booking" vertex="1">
+          <mxGeometry height="74" width="230" x="1025" y="733" as="geometry" />
+        </mxCell>
+        <mxCell id="e_visitor_browse" edge="1" parent="1" source="visitor" style="edgeStyle=none;html=0;strokeColor=#829A94;strokeWidth=1.3;endArrow=none;fontFamily=Arial;fontSize=17;" target="browse" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_visitor_register" edge="1" parent="1" source="visitor" style="edgeStyle=none;html=0;strokeColor=#829A94;strokeWidth=1.3;endArrow=none;fontFamily=Arial;fontSize=17;" target="register" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_user_login" edge="1" parent="1" source="user" style="edgeStyle=none;html=0;strokeColor=#829A94;strokeWidth=1.3;endArrow=none;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Arial;fontSize=17;" target="login" value="">
+          <mxGeometry relative="1" x="0.0517" as="geometry">
+            <Array as="points">
+              <mxPoint x="580" y="450" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_user_logout" edge="1" parent="1" source="user" style="edgeStyle=none;html=0;strokeColor=#829A94;strokeWidth=1.3;endArrow=none;fontFamily=Arial;fontSize=17;" target="logout" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="480" y="510" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_user_create" edge="1" parent="1" source="user" style="edgeStyle=none;html=0;strokeColor=#829A94;strokeWidth=1.3;endArrow=none;fontFamily=Arial;fontSize=17;" target="create" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_user_viewown" edge="1" parent="1" source="user" style="edgeStyle=none;html=0;strokeColor=#829A94;strokeWidth=1.3;endArrow=none;fontFamily=Arial;fontSize=17;" target="viewown" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_user_editown" edge="1" parent="1" source="user" style="edgeStyle=none;html=0;strokeColor=#829A94;strokeWidth=1.3;endArrow=none;fontFamily=Arial;fontSize=17;" target="editown" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_user_deleteown" edge="1" parent="1" source="user" style="edgeStyle=none;html=0;strokeColor=#829A94;strokeWidth=1.3;endArrow=none;fontFamily=Arial;fontSize=17;" target="deleteown" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_admin_viewany" edge="1" parent="1" source="admin" style="edgeStyle=none;html=0;strokeColor=#829A94;strokeWidth=1.3;endArrow=none;fontFamily=Arial;fontSize=17;" target="viewany" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_admin_editany" edge="1" parent="1" source="admin" style="edgeStyle=none;html=0;strokeColor=#829A94;strokeWidth=1.3;endArrow=none;fontFamily=Arial;fontSize=17;" target="editany" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_admin_deleteany" edge="1" parent="1" source="admin" style="edgeStyle=none;html=0;strokeColor=#829A94;strokeWidth=1.3;endArrow=none;fontFamily=Arial;fontSize=17;" target="deleteany" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_admin_login" edge="1" parent="1" source="admin" style="edgeStyle=none;html=0;strokeColor=#829A94;strokeWidth=1.3;endArrow=none;fontFamily=Arial;fontSize=17;" target="login" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1180" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gen_user_visitor" edge="1" parent="1" source="user" style="edgeStyle=none;html=0;strokeColor=#829A94;strokeWidth=1.5;endArrow=block;endFill=0;endSize=14;fontFamily=Arial;fontSize=17;exitX=0;exitY=0.5;entryX=0;entryY=0.5;" target="visitor" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="65" y="590" />
+              <mxPoint x="65" y="320" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="footer" parent="1" style="text;html=0;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=16;fontColor=#64748B;" value="Authentication is a precondition for protected actions. Delete Booking cancels the stored booking." vertex="1">
+          <mxGeometry height="40" width="1400" x="100" y="845" as="geometry" />
+        </mxCell>
+        <mxCell id="visitor_caption" value="Visitor" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontStyle=1;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="55.0" y="379.0" width="200" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="user_caption" value="Registered User" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontStyle=1;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="55.0" y="659.0" width="200" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="admin_caption" value="Admin" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontStyle=1;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="1350.0" y="654.0" width="200" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="e_admin_logout" value="" edge="1" parent="1" source="admin" target="logout" style="edgeStyle=none;html=0;strokeColor=#829A94;strokeWidth=1.5;endArrow=none;endFill=1;dashed=0;fontColor=#2D7D70;fontFamily=Arial;fontSize=17;labelBackgroundColor=#FFFFFF;entryX=1;entryY=0.5;">
+          <mxGeometry relative="1" x="0" y="-13" as="geometry">
+            <Array as="points">
+              <mxPoint x="1300" y="445" />
+              <mxPoint x="1100" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,197 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" agent="Codex" type="device">
+  <diagram name="Sequence Diagram" id="sequence-diagram">
+    <mxGraphModel page="1" pageScale="1" pageWidth="1600" pageHeight="900" grid="1" gridSize="10" guides="1" connect="1" arrows="1" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="Butterbear | Sequence Diagram" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=36;fontStyle=1;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="26" width="1500" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="Booking creation and a scheduled weather reminder — separate HTTP and background execution" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;fontColor=#64748B;" vertex="1" parent="1">
+          <mxGeometry x="42" y="81" width="1500" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="client" value="User / Runner" style="shape=rectangle;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=21;fontStyle=1;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=#F1F8F6;strokeColor=#2D7D70;strokeWidth=1.5;spacing=8;rounded=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="15" y="145" width="210" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="lifeline_client" value="" edge="1" parent="1" style="edgeStyle=none;html=0;strokeColor=#A8B8B5;strokeWidth=1.5;endArrow=none;endFill=1;dashed=1;fontFamily=Arial;fontSize=18;fontColor=#173B34;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="120" y="203" as="sourcePoint" />
+            <mxPoint x="120" y="817" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="api" value="Express API" style="shape=rectangle;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=21;fontStyle=1;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=#F1F8F6;strokeColor=#2D7D70;strokeWidth=1.5;spacing=8;rounded=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="285" y="145" width="210" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="lifeline_api" value="" edge="1" parent="1" style="edgeStyle=none;html=0;strokeColor=#A8B8B5;strokeWidth=1.5;endArrow=none;endFill=1;dashed=1;fontFamily=Arial;fontSize=18;fontColor=#173B34;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="390" y="203" as="sourcePoint" />
+            <mxPoint x="390" y="817" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="db" value="MongoDB Atlas" style="shape=rectangle;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=21;fontStyle=1;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=#F1F8F6;strokeColor=#2D7D70;strokeWidth=1.5;spacing=8;rounded=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="565" y="145" width="210" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="lifeline_db" value="" edge="1" parent="1" style="edgeStyle=none;html=0;strokeColor=#A8B8B5;strokeWidth=1.5;endArrow=none;endFill=1;dashed=1;fontFamily=Arial;fontSize=18;fontColor=#173B34;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="670" y="203" as="sourcePoint" />
+            <mxPoint x="670" y="817" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="worker" value="Notification Worker" style="shape=rectangle;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=21;fontStyle=1;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=#F1F8F6;strokeColor=#2D7D70;strokeWidth=1.5;spacing=8;rounded=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="825" y="145" width="210" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="lifeline_worker" value="" edge="1" parent="1" style="edgeStyle=none;html=0;strokeColor=#A8B8B5;strokeWidth=1.5;endArrow=none;endFill=1;dashed=1;fontFamily=Arial;fontSize=18;fontColor=#173B34;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="930" y="203" as="sourcePoint" />
+            <mxPoint x="930" y="817" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="meteo" value="Open-Meteo API" style="shape=rectangle;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=21;fontStyle=1;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=#F1F8F6;strokeColor=#2D7D70;strokeWidth=1.5;spacing=8;rounded=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="1085" y="145" width="210" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="lifeline_meteo" value="" edge="1" parent="1" style="edgeStyle=none;html=0;strokeColor=#A8B8B5;strokeWidth=1.5;endArrow=none;endFill=1;dashed=1;fontFamily=Arial;fontSize=18;fontColor=#173B34;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1190" y="203" as="sourcePoint" />
+            <mxPoint x="1190" y="817" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="smtp" value="Gmail SMTP" style="shape=rectangle;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=21;fontStyle=1;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=#F1F8F6;strokeColor=#2D7D70;strokeWidth=1.5;spacing=8;rounded=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="1355" y="145" width="210" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="lifeline_smtp" value="" edge="1" parent="1" style="edgeStyle=none;html=0;strokeColor=#A8B8B5;strokeWidth=1.5;endArrow=none;endFill=1;dashed=1;fontFamily=Arial;fontSize=18;fontColor=#173B34;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1460" y="203" as="sourcePoint" />
+            <mxPoint x="1460" y="817" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m1" value="" edge="1" parent="1" style="edgeStyle=none;html=0;strokeColor=#2D7D70;strokeWidth=1.5;endArrow=block;endFill=1;dashed=0;fontFamily=Arial;fontSize=18;fontColor=#173B34;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="120" y="250" as="sourcePoint" />
+            <mxPoint x="390" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m1_label" value="POST /bookings" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=17;fontStyle=0;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="128" y="219" width="254" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="validate" value="Validate session + 1–3 nights" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;fontColor=#64748B;" vertex="1" parent="1">
+          <mxGeometry x="280" y="263" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="m2" value="" edge="1" parent="1" style="edgeStyle=none;html=0;strokeColor=#2D7D70;strokeWidth=1.5;endArrow=block;endFill=1;dashed=0;fontFamily=Arial;fontSize=18;fontColor=#173B34;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="390" y="315" as="sourcePoint" />
+            <mxPoint x="670" y="315" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m2_label" value="Insert booking + email jobs" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=17;fontStyle=0;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="398" y="284" width="264" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="m3" value="" edge="1" parent="1" style="edgeStyle=none;html=0;strokeColor=#829A94;strokeWidth=1.5;endArrow=open;endFill=0;dashed=1;fontFamily=Arial;fontSize=18;fontColor=#173B34;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="670" y="354" as="sourcePoint" />
+            <mxPoint x="390" y="354" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m3_label" value="Persisted" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=17;fontStyle=0;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="398" y="323" width="264" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="m4" value="" edge="1" parent="1" style="edgeStyle=none;html=0;strokeColor=#829A94;strokeWidth=1.5;endArrow=open;endFill=0;dashed=1;fontFamily=Arial;fontSize=18;fontColor=#173B34;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="390" y="393" as="sourcePoint" />
+            <mxPoint x="120" y="393" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m4_label" value="201 Created (queued)" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=17;fontStyle=0;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="128" y="362" width="254" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="when_due" value="WHEN THE REMINDER IS DUE" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontStyle=1;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;fontColor=#2D7D70;" vertex="1" parent="1">
+          <mxGeometry x="55" y="421" width="700" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="m5" value="" edge="1" parent="1" style="edgeStyle=none;html=0;strokeColor=#2D7D70;strokeWidth=1.5;endArrow=block;endFill=1;dashed=0;fontFamily=Arial;fontSize=18;fontColor=#173B34;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="930" y="478" as="sourcePoint" />
+            <mxPoint x="670" y="478" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m5_label" value="Atomically claim due job" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=17;fontStyle=0;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="678" y="447" width="244" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="m6" value="" edge="1" parent="1" style="edgeStyle=none;html=0;strokeColor=#829A94;strokeWidth=1.5;endArrow=open;endFill=0;dashed=1;fontFamily=Arial;fontSize=18;fontColor=#173B34;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="670" y="515" as="sourcePoint" />
+            <mxPoint x="930" y="515" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m6_label" value="Job + booking snapshot" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=17;fontStyle=0;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="678" y="484" width="244" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="m7" value="" edge="1" parent="1" style="edgeStyle=none;html=0;strokeColor=#2D7D70;strokeWidth=1.5;endArrow=block;endFill=1;dashed=0;fontFamily=Arial;fontSize=18;fontColor=#173B34;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="930" y="555" as="sourcePoint" />
+            <mxPoint x="1190" y="555" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m7_label" value="GET check-in forecast" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=17;fontStyle=0;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="938" y="524" width="244" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="m8" value="" edge="1" parent="1" style="edgeStyle=none;html=0;strokeColor=#829A94;strokeWidth=1.5;endArrow=open;endFill=0;dashed=1;fontFamily=Arial;fontSize=18;fontColor=#173B34;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1190" y="594" as="sourcePoint" />
+            <mxPoint x="930" y="594" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m8_label" value="Forecast / unavailable" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=17;fontStyle=0;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="938" y="563" width="244" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="m9" value="" edge="1" parent="1" style="edgeStyle=none;html=0;strokeColor=#2D7D70;strokeWidth=1.5;endArrow=block;endFill=1;dashed=0;fontFamily=Arial;fontSize=18;fontColor=#173B34;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="930" y="634" as="sourcePoint" />
+            <mxPoint x="670" y="634" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m9_label" value="Recheck status + revision" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=17;fontStyle=0;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="678" y="603" width="244" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="m10" value="" edge="1" parent="1" style="edgeStyle=none;html=0;strokeColor=#829A94;strokeWidth=1.5;endArrow=open;endFill=0;dashed=1;fontFamily=Arial;fontSize=18;fontColor=#173B34;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="670" y="671" as="sourcePoint" />
+            <mxPoint x="930" y="671" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m10_label" value="Active + current revision" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=17;fontStyle=0;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="678" y="640" width="244" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="m11" value="" edge="1" parent="1" style="edgeStyle=none;html=0;strokeColor=#2D7D70;strokeWidth=1.5;endArrow=block;endFill=1;dashed=0;fontFamily=Arial;fontSize=18;fontColor=#173B34;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="930" y="715" as="sourcePoint" />
+            <mxPoint x="1460" y="715" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m11_label" value="Send reminder with forecast or fallback" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=17;fontStyle=0;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="938" y="684" width="514" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="m12" value="" edge="1" parent="1" style="edgeStyle=none;html=0;strokeColor=#829A94;strokeWidth=1.5;endArrow=open;endFill=0;dashed=1;fontFamily=Arial;fontSize=18;fontColor=#173B34;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1460" y="754" as="sourcePoint" />
+            <mxPoint x="930" y="754" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m12_label" value="SMTP accepted" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=17;fontStyle=0;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="938" y="723" width="514" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="m13" value="" edge="1" parent="1" style="edgeStyle=none;html=0;strokeColor=#2D7D70;strokeWidth=1.5;endArrow=block;endFill=1;dashed=0;fontFamily=Arial;fontSize=18;fontColor=#173B34;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="930" y="798" as="sourcePoint" />
+            <mxPoint x="670" y="798" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m13_label" value="Save sent status" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=17;fontStyle=0;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="678" y="767" width="244" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="footer" value="The reminder is normally due at 09:00 the day before check-in. A late booking can make it due immediately." style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=17;fontStyle=0;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;fontColor=#64748B;" vertex="1" parent="1">
+          <mxGeometry x="60" y="852" width="1480" height="34" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

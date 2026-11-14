@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" agent="Codex" type="device">
+  <diagram name="Class Diagram" id="class-diagram">
+    <mxGraphModel page="1" pageScale="1" pageWidth="1600" pageHeight="900" grid="1" gridSize="10" guides="1" connect="1" arrows="1" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="Butterbear | Class Diagram" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=36;fontStyle=1;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="26" width="1500" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="Persistent data model — Mongoose schemas, associations and embedded notifications" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;fontColor=#64748B;" vertex="1" parent="1">
+          <mxGeometry x="42" y="81" width="1500" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="user" value="" style="shape=rectangle;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=#FFFFFF;strokeColor=#2D7D70;strokeWidth=1.5;spacing=8;rounded=1;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="100" y="205" width="340" height="235" as="geometry" />
+        </mxCell>
+        <mxCell id="user_head" value="User" style="shape=rectangle;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=24;fontStyle=1;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=#F1F8F6;strokeColor=#2D7D70;strokeWidth=1.5;spacing=8;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="205" width="340" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="user_fields" value="_id: ObjectId&#10;name, phone, email: String&#10;password: String {hashed}&#10;role: user | admin&#10;favorites: ObjectId[]" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;verticalAlign=top;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="113" y="262" width="314" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="booking" value="" style="shape=rectangle;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=#FFFFFF;strokeColor=#2D7D70;strokeWidth=1.5;spacing=8;rounded=1;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="600" y="205" width="400" height="285" as="geometry" />
+        </mxCell>
+        <mxCell id="booking_head" value="Booking" style="shape=rectangle;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=24;fontStyle=1;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=#F1F8F6;strokeColor=#2D7D70;strokeWidth=1.5;spacing=8;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="600" y="205" width="400" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="booking_fields" value="_id: ObjectId&#10;user, campground: ObjectId&#10;checkIn, checkOut: String&#10;checkInAt: Date&#10;specialRequest: String&#10;revision: Number&#10;status: active | cancelled" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;verticalAlign=top;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="613" y="262" width="374" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="campground" value="" style="shape=rectangle;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=#FFFFFF;strokeColor=#2D7D70;strokeWidth=1.5;spacing=8;rounded=1;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="205" width="340" height="235" as="geometry" />
+        </mxCell>
+        <mxCell id="campground_head" value="Campground" style="shape=rectangle;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=24;fontStyle=1;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=#F1F8F6;strokeColor=#2D7D70;strokeWidth=1.5;spacing=8;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="205" width="340" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="campground_fields" value="_id: ObjectId&#10;name, address, phone: String&#10;latitude, longitude: Number&#10;timezone: String&#10;active: Boolean" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;verticalAlign=top;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="1173" y="262" width="314" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="session" value="" style="shape=rectangle;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=#FFFFFF;strokeColor=#2D7D70;strokeWidth=1.5;spacing=8;rounded=1;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="100" y="620" width="340" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="session_head" value="Session" style="shape=rectangle;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=24;fontStyle=1;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=#F1F8F6;strokeColor=#2D7D70;strokeWidth=1.5;spacing=8;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="620" width="340" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="session_fields" value="_id: String {JWT jti}&#10;user: ObjectId&#10;expiresAt: Date {TTL index}" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;verticalAlign=top;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="113" y="677" width="314" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="notification" value="" style="shape=rectangle;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=#FFFFFF;strokeColor=#2D7D70;strokeWidth=1.5;spacing=8;rounded=1;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="600" y="610" width="540" height="225" as="geometry" />
+        </mxCell>
+        <mxCell id="notification_head" value="Notification" style="shape=rectangle;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=24;fontStyle=1;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=#F1F8F6;strokeColor=#2D7D70;strokeWidth=1.5;spacing=8;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="600" y="610" width="540" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="notification_fields" value="type: confirmation | update | reminder&#10;revision: Number   recipient: String&#10;snapshot: Mixed&#10;scheduledAt, nextAttemptAt: Date&#10;status: pending | processing | sent | ...&#10;attempts, claimToken, leaseUntil, ..." style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;verticalAlign=top;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="613" y="667" width="514" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="owns_bookings" value="" edge="1" parent="1" source="user" target="booking" style="edgeStyle=none;html=0;strokeColor=#829A94;strokeWidth=1.5;endArrow=none;endFill=1;dashed=0;fontColor=#2D7D70;fontFamily=Arial;fontSize=17;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0;entryY=0.4123;">
+          <mxGeometry relative="1" x="0" y="-13" as="geometry" />
+        </mxCell>
+        <mxCell id="ub_one" value="1" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=20;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="450" y="283" width="40" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="ub_many" value="0..*" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=20;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="540" y="283" width="55" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="booked_at" value="" edge="1" parent="1" source="booking" target="campground" style="edgeStyle=none;html=0;strokeColor=#829A94;strokeWidth=1.5;endArrow=none;endFill=1;dashed=0;fontColor=#2D7D70;fontFamily=Arial;fontSize=17;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.4123;entryX=0;entryY=0.5;">
+          <mxGeometry relative="1" x="0" y="-13" as="geometry" />
+        </mxCell>
+        <mxCell id="bc_many" value="0..*" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=20;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="1004" y="283" width="65" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="bc_one" value="1" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=20;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="1115" y="283" width="35" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="has_sessions" value="" edge="1" parent="1" source="user" target="session" style="edgeStyle=none;html=0;strokeColor=#829A94;strokeWidth=1.5;endArrow=none;endFill=1;dashed=0;fontColor=#2D7D70;fontFamily=Arial;fontSize=17;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;">
+          <mxGeometry relative="1" x="0" y="-13" as="geometry" />
+        </mxCell>
+        <mxCell id="us_one" value="1" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=20;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="280" y="450" width="40" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="us_many" value="0..*" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=20;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="280" y="580" width="60" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="sessionslabel" value="sessions" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="290" y="510" width="170" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="has_notifications" value="" edge="1" parent="1" source="booking" target="notification" style="edgeStyle=none;html=0;strokeColor=#2D7D70;strokeWidth=1.5;endArrow=none;endFill=1;dashed=0;fontColor=#2D7D70;fontFamily=Arial;fontSize=17;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.37037;entryY=0;startArrow=diamond;startFill=1;">
+          <mxGeometry relative="1" x="0" y="-13" as="geometry" />
+        </mxCell>
+        <mxCell id="bn_one" value="1" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=20;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="813" y="490" width="40" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="bn_many" value="0..*" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=20;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="813" y="575" width="60" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="embeddedlabel" value="notifications {embedded}" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="840" y="535" width="300" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="favorites" value="" edge="1" parent="1" source="user" target="campground" style="edgeStyle=none;html=0;strokeColor=#829A94;strokeWidth=1.5;endArrow=none;endFill=1;dashed=0;fontColor=#2D7D70;fontFamily=Arial;fontSize=17;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=0;">
+          <mxGeometry relative="1" x="0" y="-13" as="geometry">
+            <Array as="points">
+              <mxPoint x="270" y="155" />
+              <mxPoint x="1330" y="155" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="favlabel" value="favorites" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontStyle=0;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="670" y="125" width="240" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="favleft" value="0..*" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=20;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="280" y="166" width="70" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="favright" value="0..*" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=20;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="1340" y="166" width="70" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="modelnotes" value="MODEL NOTES" style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontStyle=1;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;fontColor=#2D7D70;" vertex="1" parent="1">
+          <mxGeometry x="1190" y="585" width="300" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="modelnotestext" value="Admin is a User role.&#10;&#10;Notifications belong to the&#10;Booking document.&#10;&#10;Cancellation keeps history." style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontStyle=0;fontColor=#173B34;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1190" y="627" width="330" height="185" as="geometry" />
+        </mxCell>
+        <mxCell id="footer" value="1–3 calendar nights per booking. Reference relationships use ObjectIds; the filled diamond denotes composition." style="text;shape=text;html=0;whiteSpace=wrap;fontFamily=Arial;fontSize=17;fontStyle=0;fontColor=#173B34;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;strokeWidth=1.5;spacing=8;fontColor=#64748B;" vertex="1" parent="1">
+          <mxGeometry x="60" y="852" width="1480" height="34" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
